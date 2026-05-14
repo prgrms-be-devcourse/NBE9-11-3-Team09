@@ -1,6 +1,5 @@
 package com.example.parking.domain.admin.user.controller;
 
-import com.example.parking.domain.admin.user.dto.AdminUserResDto;
 import com.example.parking.domain.admin.user.service.AdminUserService;
 import com.example.parking.global.response.RsData;
 import io.swagger.v3.oas.annotations.Operation;
