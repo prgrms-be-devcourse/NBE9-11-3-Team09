@@ -1,9 +1,6 @@
 package com.example.parking.domain.user.service;
 
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
-import com.example.parking.domain.user.entity.UserStatus;
-import com.example.parking.domain.user.entity.VehicleType;
 import com.example.parking.domain.user.repository.RefreshTokenRepository;
 import com.example.parking.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;

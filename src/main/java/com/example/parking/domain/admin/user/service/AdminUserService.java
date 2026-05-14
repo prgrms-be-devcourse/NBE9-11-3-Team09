@@ -1,6 +1,5 @@
 package com.example.parking.domain.admin.user.service;
 
-import com.example.parking.domain.user.entity.UserRole;
 import com.example.parking.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,7 +1,5 @@
 package com.example.parking.global.security;
 
-import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserStatus;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
