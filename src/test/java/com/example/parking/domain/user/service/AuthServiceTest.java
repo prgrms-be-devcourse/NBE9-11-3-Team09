@@ -1,8 +1,5 @@
 package com.example.parking.domain.user.service;
 
-import com.example.parking.domain.user.dto.LoginReqDto;
-import com.example.parking.domain.user.dto.LoginResDto;
-import com.example.parking.domain.user.dto.RefreshTokenReqDto;
 import com.example.parking.domain.user.entity.RefreshToken;
 import com.example.parking.domain.user.entity.User;
 import com.example.parking.domain.user.entity.UserRole;
