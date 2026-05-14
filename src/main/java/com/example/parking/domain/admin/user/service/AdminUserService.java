@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.parking.domain.admin.user.dto.AdminUserResDto;
+import com.example.parking.domain.user.entity.UserRole;
 
 
 @Service

@@ -1,7 +1,17 @@
 package com.example.parking.domain.user.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -9,9 +19,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class) // 생성 일시 자동 기록용
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -55,17 +64,51 @@ public class User {
         this.name = name;
         this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
-        this.role = role != null ? role : UserRole.USER; // 기본값 처리
-        this.status = UserStatus.ACTIVE; // 기본값 처리
+        this.role = role != null ? role : UserRole.USER;
+        this.status = UserStatus.ACTIVE;
     }
 
-    // [CUS-10] 차량 정보 수정 - 차량 번호와 차량 종류를 수정하는 메서드
+    public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
     public void updateVehicleInfo(String plateNumber, VehicleType vehicleType) {
         this.plateNumber = plateNumber;
         this.vehicleType = vehicleType;
     }
 
-    // [CUS 07] 회원 탈퇴 시 사용자 상태를 WITHDRAW로 변경하는 메서드
     public void withdraw() {
         this.status = UserStatus.WITHDRAW;
     }

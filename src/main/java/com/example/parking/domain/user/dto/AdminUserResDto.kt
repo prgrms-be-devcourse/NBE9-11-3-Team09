@@ -20,14 +20,14 @@ data class AdminUserResDto(
         @JvmStatic
         fun from(user: User): AdminUserResDto =
             AdminUserResDto(
-                user.id,
-                user.email,
-                user.name,
-                user.plateNumber,
-                user.vehicleType,
-                user.role,
-                user.status,
-                user.createdTime
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                user.getPlateNumber(),
+                user.getVehicleType(),
+                user.getRole(),
+                user.getStatus(),
+                user.getCreatedTime()
             )
     }
 }
