@@ -19,6 +19,6 @@ data class SignupReqDto(
     @field:NotBlank(message = "차량 번호는 필수입니다.")
     var plateNumber: String = "",
 
-    @field:NotBlank(message = "차량 종류는 필수입니다.")
+    @field:NotNull(message = "차량 종류는 필수입니다.")
     var vehicleType: VehicleType? = null
 )
