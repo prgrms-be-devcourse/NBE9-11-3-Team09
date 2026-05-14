@@ -36,26 +36,26 @@ public class ParkingOpenApiClient {
             throw new ExternalApiException("서울시 주차장 API 응답이 null입니다.");
         }
 
-        if (response.parkInfo() == null) {
+        if (response.parkInfo == null) {
             throw new ExternalApiException("서울시 주차장 API 응답에 parkInfo가 없습니다.");
         }
 
-        ParkingApiDto.ParkInfo parkInfo = response.parkInfo();
+        ParkingApiDto.ParkInfo parkInfo = response.parkInfo;
 
-        if (parkInfo.result() == null) {
+        if (parkInfo.result == null) {
             throw new ExternalApiException("서울시 주차장 API 응답에 RESULT가 없습니다.");
         }
 
-        if (!"INFO-000".equals(parkInfo.result().code())) {
+        if (!"INFO-000".equals(parkInfo.result.code)) {
             throw new ExternalApiException(
                     "서울시 주차장 API 비정상 응답: "
-                            + parkInfo.result().code()
+                            + parkInfo.result.code
                             + " / "
-                            + parkInfo.result().message()
+                            + parkInfo.result.message
             );
         }
 
-        if (parkInfo.items() == null) {
+        if (parkInfo.items == null) {
             throw new ExternalApiException("서울시 주차장 API 응답에 row 데이터가 없습니다.");
         }
     }

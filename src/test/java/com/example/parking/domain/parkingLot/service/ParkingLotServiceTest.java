@@ -109,7 +109,7 @@ class ParkingLotServiceTest {
 
             // then
             assertThat(result).hasSize(1);
-            assertThat(result.get(0).name()).isEqualTo("역삼 공영주차장");
+            assertThat(result.get(0).name).isEqualTo("역삼 공영주차장");
 
             verify(parkingLotRepository).findByAddressContaining("역삼동");
         }
@@ -145,7 +145,7 @@ class ParkingLotServiceTest {
             ParkingLotResDto result = parkingLotService.findById(1L);
 
             // then
-            assertThat(result.name()).isEqualTo("역삼 공영주차장");
+            assertThat(result.name).isEqualTo("역삼 공영주차장");
             verify(parkingLotRepository).findById(1L);
         }
 

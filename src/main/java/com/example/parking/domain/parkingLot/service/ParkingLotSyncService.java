@@ -32,18 +32,18 @@ public class ParkingLotSyncService {
     @CacheEvict(value = {"parkingLots", "parkingLot"}, allEntries = true)
     public void syncParkingLots() {
         ParkingApiDto.Response response = parkingOpenApiClient.fetchParkingLots();
-        ParkingApiDto.ParkInfo parkInfo = response.parkInfo();
+        ParkingApiDto.ParkInfo parkInfo = response.parkInfo;
 
-        for (ParkingApiDto.ParkingLotItem item : parkInfo.items()) {
-            String externalId = item.pkltCd();
+        for (ParkingApiDto.ParkingLotItem item : parkInfo.items) {
+            String externalId = item.pkltCd;
 
             if (externalId == null || externalId.isBlank()) {
                 continue;
             }
 
-            String name = item.pkltNm();
-            String address = item.addr();
-            Integer totalSpot = item.tpkct() == null ? null : item.tpkct().intValue();
+            String name = item.pkltNm;
+            String address = item.addr;
+            Integer totalSpot = item.tpkct == null ? null : item.tpkct.intValue();
 
             parkingLotRepository.findByExternalId(externalId)
                     .ifPresentOrElse(
