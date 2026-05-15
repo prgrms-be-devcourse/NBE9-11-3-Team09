@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.example.parking.domain.user.entity.UserStatus;
-
+import com.example.parking.domain.user.entity.UserRole;
 
 import java.util.regex.Pattern;
 
@@ -51,14 +51,15 @@ public class UserService {
             throw new IllegalArgumentException("이미 등록된 차량 번호입니다.");
         }
 
-        User user = User.builder()
-                .email(reqDto.getUserEmail())
-                // [CUS-06] 회원가입 - 비밀번호는 저장 전에 BCrypt로 암호화
-                .password(passwordEncoder.encode(reqDto.getPassword()))
-                .name(reqDto.getName())
-                .plateNumber(reqDto.getPlateNumber())
-                .vehicleType(reqDto.getVehicleType())
-                .build();
+        User user = new User(
+                reqDto.getUserEmail(),
+                passwordEncoder.encode(reqDto.getPassword()),
+                reqDto.getName(),
+                reqDto.getPlateNumber(),
+                reqDto.getVehicleType(),
+                UserRole.USER,
+                UserStatus.ACTIVE
+        );
 
         User savedUser = userRepository.save(user);
         return UserProfileResDto.from(savedUser);

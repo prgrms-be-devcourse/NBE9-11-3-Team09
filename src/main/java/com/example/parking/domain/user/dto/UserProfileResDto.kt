@@ -16,12 +16,12 @@ data class UserProfileResDto(
         @JvmStatic
         fun from(user: User): UserProfileResDto =
             UserProfileResDto(
-                user.getId(),
-                user.getEmail(),
-                user.getName(),
-                user.getPlateNumber(),
-                user.getVehicleType(),
-                user.getRole()
+                user.id,
+                user.email,
+                user.name,
+                user.plateNumber,
+                user.vehicleType,
+                user.role
             )
     }
 }

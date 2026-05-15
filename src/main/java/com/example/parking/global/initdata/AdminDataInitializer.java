@@ -1,6 +1,7 @@
 package com.example.parking.global.initdata;
 
 import com.example.parking.domain.user.entity.User;
+import com.example.parking.domain.user.entity.UserStatus;
 import com.example.parking.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,14 +50,15 @@ public class AdminDataInitializer implements CommandLineRunner {
             return;
         }
 
-        User admin = User.builder()
-                .email(adminEmail)
-                .password(passwordEncoder.encode(adminPassword))
-                .name(adminName)
-                .plateNumber(adminPlateNumber)
-                .vehicleType(VehicleType.valueOf(adminVehicleType))
-                .role(UserRole.ADMIN)
-                .build();
+        User admin = new User(
+                adminEmail,
+                passwordEncoder.encode(adminPassword),
+                adminName,
+                adminPlateNumber,
+                VehicleType.valueOf(adminVehicleType),
+                UserRole.ADMIN,
+                UserStatus.ACTIVE
+        );
 
         userRepository.save(admin);
     }
