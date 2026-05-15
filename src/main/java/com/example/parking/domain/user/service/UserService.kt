@@ -23,15 +23,14 @@ class UserService(
     private val passwordEncoder: PasswordEncoder
 ) {
     fun checkEmail(email: String?): EmailCheckResDto {
-        if (email.isNullOrBlank()) {
-            throw IllegalArgumentException("이메일은 필수입니다.")
-        }
+        val checkedEmail = email?.takeIf { it.isNotBlank() }
+            ?: throw IllegalArgumentException("이메일은 필수입니다.")
 
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
+        if (!EMAIL_PATTERN.matcher(checkedEmail).matches()) {
             throw IllegalArgumentException("올바른 이메일 형식이 아닙니다.")
         }
 
-        return if (userRepository.existsByEmail(email)) {
+        return if (userRepository.existsByEmail(checkedEmail)) {
             EmailCheckResDto(false, "이미 사용 중인 이메일입니다.")
         } else {
             EmailCheckResDto(true, "사용 가능한 이메일입니다.")
@@ -48,12 +47,20 @@ class UserService(
             throw IllegalArgumentException("이미 등록된 차량 번호입니다.")
         }
 
+        val encodedPassword = requireNotNull(passwordEncoder.encode(reqDto.password)) {
+            "비밀번호 암호화에 실패했습니다."
+        }
+
+        val vehicleType = requireNotNull(reqDto.vehicleType) {
+            "차량 종류는 필수입니다."
+        }
+
         val user = User(
             email = reqDto.userEmail,
-            password = passwordEncoder.encode(reqDto.password),
+            password = encodedPassword,
             name = reqDto.name,
             plateNumber = reqDto.plateNumber,
-            vehicleType = requireNotNull(reqDto.vehicleType) { "차량 종류는 필수입니다." },
+            vehicleType = vehicleType,
             role = UserRole.USER,
             status = UserStatus.ACTIVE
         )
