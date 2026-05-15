@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.*
-import org.mockito.Mockito.spy
 import org.mockito.junit.jupiter.MockitoExtension
 import java.util.*
 
@@ -42,7 +41,7 @@ internal class ParkingLotSyncServiceTest {
                 null, "역삼 공영주차장", "서울 강남구 역삼동", 10.0
             )
 
-            BDDMockito.given<ParkingApiDto.Response>(parkingOpenApiClient.fetchParkingLots())
+            BDDMockito.given(parkingOpenApiClient.fetchParkingLots())
                 .willReturn(createResponse(listOf(item)))
 
             // when
@@ -86,24 +85,34 @@ internal class ParkingLotSyncServiceTest {
             // given
             val externalId = "P-001"
             val item = createItem(
-                externalId, "수정된 주차장명", "서울 강남구 대치동", 50.0
+                externalId,
+                "수정된 주차장명",
+                "서울 강남구 대치동",
+                50.0
             )
 
-            val existingParkingLot: ParkingLot = spy(
-                ParkingLot.of("P-001", "기존 주차장명", "서울 강남구 역삼동", 10)
+            val existingParkingLot = ParkingLot.of(
+                externalId = "P-001",
+                name = "기존 주차장명",
+                address = "서울 강남구 역삼동",
+                totalSpot = 10
             )
 
             BDDMockito.given(parkingOpenApiClient.fetchParkingLots())
                 .willReturn(createResponse(listOf(item)))
+
             BDDMockito.given(parkingLotRepository.findByExternalId(externalId))
-                .willReturn(Optional.of<ParkingLot>(existingParkingLot))
+                .willReturn(Optional.of(existingParkingLot))
 
             // when
             parkingLotSyncService.syncParkingLots()
 
             // then
             Mockito.verify(parkingLotRepository).findByExternalId(externalId)
-            Mockito.verify(existingParkingLot).updateInfo("수정된 주차장명", "서울 강남구 대치동", 50)
+
+            Assertions.assertThat(existingParkingLot.name).isEqualTo("수정된 주차장명")
+            Assertions.assertThat(existingParkingLot.address).isEqualTo("서울 강남구 대치동")
+            Assertions.assertThat(existingParkingLot.totalSpot).isEqualTo(50)
 
             Mockito.verify(parkingLotRepository, Mockito.never())
                 .save(ArgumentMatchers.any(ParkingLot::class.java))
@@ -129,10 +138,7 @@ internal class ParkingLotSyncServiceTest {
             BDDMockito.given<Optional<ParkingLot>>(parkingLotRepository.findByExternalId(externalId))
                 .willReturn(Optional.empty<ParkingLot>())
             BDDMockito.given(
-                parkingLotRepository.save(
-                    ArgumentMatchers.any(
-                        ParkingLot::class.java
-                    )
+                parkingLotRepository.save(ArgumentMatchers.any(ParkingLot::class.java)
                 )
             )
                 .willReturn(savedParkingLot)
