@@ -15,23 +15,23 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class AdminDataInitializer(
     private val userRepository: UserRepository,
-    private val passwordEncoder: PasswordEncoder
-) : CommandLineRunner {
+    private val passwordEncoder: PasswordEncoder,
 
     @Value("\${app.admin.email:}")
-    private lateinit var adminEmail: String
+    private val adminEmail: String,
 
     @Value("\${app.admin.password:}")
-    private lateinit var adminPassword: String
+    private val adminPassword: String,
 
     @Value("\${app.admin.name:관리자}")
-    private lateinit var adminName: String
+    private val adminName: String,
 
     @Value("\${app.admin.plate-number:00가0000}")
-    private lateinit var adminPlateNumber: String
+    private val adminPlateNumber: String,
 
     @Value("\${app.admin.vehicle-type:SMALL}")
-    private lateinit var adminVehicleType: String
+    private val adminVehicleType: String
+) : CommandLineRunner {
 
     override fun run(vararg args: String) {
         if (adminEmail.isBlank()) {
