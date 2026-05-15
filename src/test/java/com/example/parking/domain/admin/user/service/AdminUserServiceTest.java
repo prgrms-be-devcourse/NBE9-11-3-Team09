@@ -1,9 +1,6 @@
 package com.example.parking.domain.admin.user.service;
 
-import com.example.parking.domain.admin.user.dto.AdminUserResDto;
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
-import com.example.parking.domain.user.entity.VehicleType;
 import com.example.parking.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

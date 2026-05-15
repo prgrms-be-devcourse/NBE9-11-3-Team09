@@ -12,8 +12,6 @@ import com.example.parking.domain.reservation.entity.Reservation;
 import com.example.parking.domain.reservation.entity.ReservationStatus;
 import com.example.parking.domain.reservation.repository.ReservationRepository;
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
-import com.example.parking.domain.user.entity.VehicleType;
 import com.example.parking.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

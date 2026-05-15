@@ -1,17 +1,8 @@
 package com.example.parking.domain.user.service;
 
-import com.example.parking.domain.user.dto.EmailCheckResDto;
-import com.example.parking.domain.user.dto.SignupReqDto;
-import com.example.parking.domain.user.dto.UserProfileResDto;
-import com.example.parking.domain.user.dto.VehicleUpdateReqDto;
-import com.example.parking.domain.user.dto.WithdrawReqDto;
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
-import com.example.parking.domain.user.entity.UserStatus;
-import com.example.parking.domain.user.entity.VehicleType;
 import com.example.parking.domain.user.repository.RefreshTokenRepository;
 import com.example.parking.domain.user.repository.UserRepository;
-import com.example.parking.domain.user.dto.LoginReqDto;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -17,7 +17,6 @@ import com.example.parking.domain.reservation.entity.ReservationStatus;
 import com.example.parking.domain.reservation.repository.ReservationRepository;
 import com.example.parking.domain.reservation.service.ReservationService;
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
 import com.example.parking.global.sse.SseEmitterManager;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
