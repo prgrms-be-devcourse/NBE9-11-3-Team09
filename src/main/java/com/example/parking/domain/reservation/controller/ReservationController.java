@@ -2,6 +2,7 @@ package com.example.parking.domain.reservation.controller;
 
 import com.example.parking.domain.reservation.dto.ReservationReqDto;
 import com.example.parking.domain.reservation.dto.ReservationResDto;
+import com.example.parking.domain.reservation.entity.ReservationStatus;
 import com.example.parking.domain.reservation.service.ReservationService;
 import com.example.parking.global.response.RsData;
 import com.example.parking.global.security.CustomUserDetails;

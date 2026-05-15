@@ -2,6 +2,7 @@ package com.example.parking.domain.admin.reservation.service;
 
 import com.example.parking.domain.admin.reservation.dto.AdminReservationResDto;
 import com.example.parking.domain.reservation.entity.Reservation;
+import com.example.parking.domain.reservation.entity.ReservationStatus;
 import com.example.parking.domain.reservation.repository.ReservationRepository;
 import com.example.parking.domain.reservation.service.ReservationService; // 주입 추가
 import lombok.RequiredArgsConstructor;

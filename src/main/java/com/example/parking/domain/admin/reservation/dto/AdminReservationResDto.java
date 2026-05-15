@@ -1,6 +1,7 @@
 package com.example.parking.domain.admin.reservation.dto;
 
 import com.example.parking.domain.reservation.entity.Reservation;
+import com.example.parking.domain.reservation.entity.ReservationStatus;
 
 import java.time.LocalDateTime;
 
