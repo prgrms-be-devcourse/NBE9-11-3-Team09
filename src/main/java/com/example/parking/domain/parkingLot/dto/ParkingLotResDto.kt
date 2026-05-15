@@ -14,7 +14,9 @@ data class ParkingLotResDto(
 ) {
     companion object {
         fun from(parkingLot: ParkingLot) = ParkingLotResDto(
-            id = parkingLot.id,
+            id = checkNotNull(parkingLot.id) {
+                "저장되지 않은 ParkingLot은 응답 DTO로 변환할 수 없습니다."
+            },
             name = parkingLot.name,
             address = parkingLot.address,
             totalSpot = parkingLot.totalSpot,
