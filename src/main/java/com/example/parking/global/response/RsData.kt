@@ -3,7 +3,7 @@ package com.example.parking.global.response
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-data class RsData<T>(
+data class RsData<T>@JvmOverloads constructor(
         val msg: String,
         val resultCode: String,
         val data: T? = null

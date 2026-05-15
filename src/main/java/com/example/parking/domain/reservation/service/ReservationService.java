@@ -123,10 +123,10 @@
             // 3. 유저와 주차장 정보 조회
             User user = userRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
-            ParkingLot parkingLot = parkingLotRepository.findById(reqDto.parkingLotId())
+            ParkingLot parkingLot = parkingLotRepository.findById(reqDto.parkingLotId)
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주차장입니다."));
 
-            ParkingSpot parkingSpot = parkingSpotRepository.findById(reqDto.parkingSpotId())
+            ParkingSpot parkingSpot = parkingSpotRepository.findById(reqDto.parkingSpotId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주차 자리입니다."));
 
 
@@ -136,9 +136,9 @@
             }
 
             // 4. 선택한 주차장의 ID와 실제 주차 자리가 속한 주차장의 ID가 일치하는지 검증
-            if (!parkingSpot.getParkingLot().getId().equals(reqDto.parkingLotId())) {
-                throw new IllegalArgumentException("선택하신 주차장(ID: " + reqDto.parkingLotId() +
-                        ")에 해당 주차 자리(ID: " + reqDto.parkingSpotId() + ")가 존재하지 않습니다.");
+            if (!parkingSpot.getParkingLot().getId().equals(reqDto.parkingLotId)) {
+                throw new IllegalArgumentException("선택하신 주차장(ID: " + reqDto.parkingLotId +
+                        ")에 해당 주차 자리(ID: " + reqDto.parkingSpotId + ")가 존재하지 않습니다.");
             }
 
             // 4-1. 주차 자리와 내 차종이 서로 다를때의 방어로직.
@@ -160,7 +160,7 @@
             // [신규 추가] 1인 1주차장 1자리 제한 검증
             List<ReservationStatus> activeStatuses = List.of(ReservationStatus.PENDING, ReservationStatus.CONFIRMED, ReservationStatus.COMPLETED);
             boolean hasActiveReservation = reservationRepository.existsByUserIdAndParkingLotIdAndStatusIn(
-                userId, reqDto.parkingLotId(), activeStatuses
+                userId, reqDto.parkingLotId, activeStatuses
             );
 
             if (hasActiveReservation) {
@@ -173,7 +173,7 @@
             }
 
             // 7. CAS 성공 저장용 재조회 (영속 컨텍스트 문제 해결. CAS는 영속 컨텍스트를 비워버리므로)
-            ParkingSpot spot = parkingSpotRepository.findById(reqDto.parkingSpotId())
+            ParkingSpot spot = parkingSpotRepository.findById(reqDto.parkingSpotId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주차 자리입니다."));
 
             // CAS 성공 후 SSE 알림 직접 발송
@@ -181,14 +181,13 @@
 
 
             // 6. 예약 엔티티 생성 및 저장
-            Reservation newReservation = Reservation.builder()
-                    .user(user)
-                    .parkingLot(parkingLot)
-                    .parkingSpot(spot)
-                    .startTime(start)
-                    .endTime(end)
-                    .status(ReservationStatus.PENDING)
-                    .build();
+            Reservation newReservation = Reservation.of(
+                    user,
+                    parkingLot,
+                    spot,
+                    start,
+                    end
+            );
 
             Reservation savedReservation = reservationRepository.save(newReservation);
             Long reservationId = savedReservation.getId(); // ID 추출

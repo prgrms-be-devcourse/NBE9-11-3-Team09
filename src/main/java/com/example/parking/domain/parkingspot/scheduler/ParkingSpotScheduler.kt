@@ -30,7 +30,7 @@ class ParkingSpotScheduler(
                 // [CUS-11] 업데이트에 성공했을 때만 알림 발송
                 if (updatedCount > 0) {
                     sseEmitterManager.notify(
-                        spot.parkingLot.id,
+                        checkNotNull(spot.parkingLot.id),
                         ParkingSpotDto(spot)
                     )
                 }

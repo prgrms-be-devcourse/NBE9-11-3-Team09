@@ -57,7 +57,7 @@ class ParkingSpotService(
         spot.updateStatus(status)
 
         sseEmitterManager.notify(
-            spot.parkingLot.id,
+            checkNotNull(spot.parkingLot.id),
             ParkingSpotDto(spot)
         )
     }
