@@ -9,7 +9,6 @@ import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository;
 import com.example.parking.domain.reservation.dto.ReservationReqDto;
 import com.example.parking.domain.reservation.dto.ReservationResDto;
 import com.example.parking.domain.reservation.entity.Reservation;
-import com.example.parking.domain.reservation.entity.ReservationStatus;
 import com.example.parking.domain.reservation.repository.ReservationRepository;
 import com.example.parking.domain.user.entity.User;
 import com.example.parking.domain.user.repository.UserRepository;
