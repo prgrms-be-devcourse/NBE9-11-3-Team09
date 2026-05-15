@@ -25,6 +25,7 @@ import org.springframework.transaction.support.TransactionSynchronization
 import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.Clock
 
 @Service
 @Transactional(readOnly = true)
@@ -37,7 +38,8 @@ class ReservationService(
     private val taskScheduler: TaskScheduler,
     private val reservationServiceProvider: ObjectProvider<ReservationService>,
     private val paymentRepository: PaymentRepository,
-    private val sseEmitterManager: SseEmitterManager
+    private val sseEmitterManager: SseEmitterManager,
+    private val clock: Clock = Clock.systemDefaultZone()
 ) {
     private val log = LoggerFactory.getLogger(ReservationService::class.java)
 
@@ -134,7 +136,7 @@ class ReservationService(
     }
 
     private fun validateReservationOpenTime() {
-        val hour = LocalDateTime.now().hour
+        val hour = LocalDateTime.now(clock).hour
         if (hour < 22) {
             throw IllegalStateException("예약은 매일 22시부터 24시까지만 가능합니다.")
         }
