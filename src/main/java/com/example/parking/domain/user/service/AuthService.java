@@ -14,7 +14,7 @@ import com.example.parking.domain.user.dto.LoginReqDto;
 import com.example.parking.domain.user.dto.LoginResDto;
 import com.example.parking.domain.user.dto.RefreshTokenReqDto;
 import com.example.parking.domain.user.entity.UserStatus;
-
+import java.util.Objects;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -77,7 +77,7 @@ public class AuthService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        if (!savedToken.getUserId().equals(userId)) {
+        if (!Objects.equals(savedToken.getUserId(), userId)) {
             throw new IllegalArgumentException("리프레시 토큰 사용자 정보가 일치하지 않습니다.");
         }
 
@@ -118,11 +118,7 @@ public class AuthService {
                 .ifPresentOrElse(
                         savedToken -> savedToken.updateToken(refreshToken, expiresAt),
                         () -> refreshTokenRepository.save(
-                                RefreshToken.builder()
-                                        .userId(userId)
-                                        .token(refreshToken)
-                                        .expiresAt(expiresAt)
-                                        .build()
+                                RefreshToken.of(userId, refreshToken, expiresAt)
                         )
                 );
     }
