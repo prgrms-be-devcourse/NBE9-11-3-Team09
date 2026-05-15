@@ -55,7 +55,6 @@ class ParkingLot protected constructor(
         private val DEFAULT_OPERATION_END_TIME: LocalTime = LocalTime.of(23, 59)
 
         // [CUS-01] 외부 API 데이터 기반 ParkingLot 생성
-        @JvmStatic
         fun of(
             externalId: String,
             name: String,
