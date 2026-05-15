@@ -16,8 +16,8 @@ data class PaymentAdminRespDto(
     companion object {
         fun from(payment: Payment) = PaymentAdminRespDto(
             paymentId = payment.id,
-            reservationId = payment.reservation.id!!,
-            userId = payment.reservation.user.id!!,
+            reservationId = payment.reservation.id,
+            userId = payment.reservation.user.id,
             userName = payment.reservation.user.name,
             amount = payment.amount,
             status = payment.status.name,

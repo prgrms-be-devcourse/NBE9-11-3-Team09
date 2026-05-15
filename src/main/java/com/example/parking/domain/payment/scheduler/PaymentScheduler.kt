@@ -13,8 +13,8 @@ import java.time.LocalDateTime
 
 @Component
 class PaymentScheduler(
-    private val paymentRepository: PaymentRepository,
-    private val sseEmitterManager: SseEmitterManager
+        private val paymentRepository: PaymentRepository,
+        private val sseEmitterManager: SseEmitterManager
 ) {
     private val log = LoggerFactory.getLogger(PaymentScheduler::class.java)
 
@@ -24,7 +24,7 @@ class PaymentScheduler(
         val deadline = LocalDateTime.now().minusMinutes(5)
 
         val expiredPayments = paymentRepository
-            .findByStatusAndCreatedAtBefore(PaymentStatus.PROCESSING, deadline)
+                .findByStatusAndCreatedAtBefore(PaymentStatus.PROCESSING, deadline)
 
         for (payment in expiredPayments) {
             payment.fail()
@@ -34,12 +34,12 @@ class PaymentScheduler(
             res.parkingSpot.release()
 
             sseEmitterManager.notify(
-                res.parkingSpot.parkingLot.id!!,
-                ParkingSpotDto(res.parkingSpot)
+                    res.parkingSpot.parkingLot.id,
+                    ParkingSpotDto(res.parkingSpot)
             )
 
             log.info("[2차 결제 타임아웃] 결제 ID: {}, 예약 ID: {} 취소 완료",
-                payment.id, res.id)
+                    payment.id, res.id)
         }
     }
 }
