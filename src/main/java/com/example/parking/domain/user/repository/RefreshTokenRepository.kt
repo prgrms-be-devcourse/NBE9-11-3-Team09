@@ -6,11 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 // 로그인 - 로그인 시 리프레시 토큰 저장 및 조회를 위한 RefreshTokenRepository
-public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
+interface RefreshTokenRepository : JpaRepository<RefreshToken, Long> {
+    fun findByToken(token: String): Optional<RefreshToken>
 
-    Optional<RefreshToken> findByUserId(Long userId);
+    fun findByUserId(userId: Long): Optional<RefreshToken>
 
-    Optional<RefreshToken> findByToken(String token);
-
-    void deleteByUserId(Long userId);
+    fun deleteByUserId(userId: Long)
 }
