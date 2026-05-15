@@ -3,7 +3,7 @@ name: PR 템플릿
 about: PR 할때 사용해 주세요.
 title: ''
 labels: ''
-assignees: ''
+assignees: sorbet0404
 
 ---
 

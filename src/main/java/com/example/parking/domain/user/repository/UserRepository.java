@@ -1,11 +1,12 @@
 package com.example.parking.domain.user.repository;
 
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
+import com.example.parking.domain.user.entity.UserRole;
+
 
 public interface UserRepository extends JpaRepository<User, Long> {
 

@@ -1,8 +1,6 @@
 package com.example.parking.global.initdata;
 
 import com.example.parking.domain.user.entity.User;
-import com.example.parking.domain.user.entity.UserRole;
-import com.example.parking.domain.user.entity.VehicleType;
 import com.example.parking.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +8,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.parking.domain.user.entity.UserRole;
+import com.example.parking.domain.user.entity.VehicleType;
+
 
 @Component
 @RequiredArgsConstructor
