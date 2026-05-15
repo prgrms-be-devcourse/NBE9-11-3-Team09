@@ -59,7 +59,7 @@ class ReservationController(
     fun cancel(
         @PathVariable reservationId: Long,
         @AuthenticationPrincipal userDetails: CustomUserDetails
-    ): ResponseEntity<RsData<Void>> {
+    ): ResponseEntity<RsData<Unit>> {
         reservationService.cancelReservation(reservationId, userDetails.userId, false)
         return ResponseEntity.ok(RsData("예약 취소 및 환불이 완료되었습니다.", "200-3"))
     }
