@@ -42,7 +42,7 @@ class AdminDataInitializer(
             return
         }
 
-        if (userRepository.findByEmail(adminEmail).isPresent) {
+        if (userRepository.existsByEmail(adminEmail)) {
             return
         }
 
