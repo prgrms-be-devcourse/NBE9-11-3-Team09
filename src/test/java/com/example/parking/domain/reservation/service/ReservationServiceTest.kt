@@ -40,8 +40,8 @@ import java.time.format.DateTimeFormatter
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-@Import(ReservationControllerTest.AllowedTimeClockConfig::class)
-class ReservationControllerTest @Autowired constructor(
+@Import(ReservationServiceTest.AllowedTimeClockConfig::class)
+class ReservationServiceTest @Autowired constructor(
     private val mvc: MockMvc,
     private val userRepository: UserRepository,
     private val parkingLotRepository: ParkingLotRepository,
