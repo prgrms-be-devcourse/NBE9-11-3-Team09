@@ -115,7 +115,7 @@ class AdminUserServiceTest @Autowired constructor(
 
         assertThat(result.content).hasSize(2)
         assertThat(result.size).isEqualTo(2)
-        assertThat(result.totalElements).isEqualTo(5)
+        assertThat(result.totalElements).isEqualTo(5L)
         assertThat(result.totalPages).isEqualTo(3)
         assertThat(result.content.map { it.userName })
             .allMatch { it.startsWith("TDD") }
