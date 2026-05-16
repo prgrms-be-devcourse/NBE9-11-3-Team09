@@ -1,10 +1,11 @@
-package com.example.parking.domain.reservation.controller
+package com.example.parking.domain.reservation.service
 
 import com.example.parking.domain.parkingLot.entity.ParkingLot
 import com.example.parking.domain.parkingLot.repository.ParkingLotRepository
 import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.entity.SpotType
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
+import com.example.parking.domain.reservation.controller.ReservationController
 import com.example.parking.domain.reservation.entity.Reservation
 import com.example.parking.domain.reservation.entity.ReservationStatus
 import com.example.parking.domain.reservation.repository.ReservationRepository
@@ -49,7 +50,8 @@ class ReservationServiceTest @Autowired constructor(
     private val parkingLotRepository: ParkingLotRepository,
     private val parkingSpotRepository: ParkingSpotRepository,
     private val reservationRepository: ReservationRepository,
-    private val jwtUtil: JwtUtil
+    private val jwtUtil: JwtUtil,
+    private val clock: Clock
 ) {
     private lateinit var savedUser: User
     private lateinit var savedLot: ParkingLot
@@ -92,8 +94,8 @@ class ReservationServiceTest @Autowired constructor(
                 user = savedUser,
                 parkingLot = savedLot,
                 parkingSpot = savedSpot,
-                startTime = LocalDateTime.now().plusHours(2),
-                endTime = LocalDateTime.now().plusHours(4)
+                startTime = LocalDateTime.now(clock).plusHours(2),
+                endTime = LocalDateTime.now(clock).plusHours(4)
             )
         )
     }
@@ -236,8 +238,8 @@ class ReservationServiceTest @Autowired constructor(
                 user = savedUser,
                 parkingLot = savedLot,
                 parkingSpot = newSpot,
-                startTime = LocalDateTime.now().plusMinutes(10),
-                endTime = LocalDateTime.now().plusHours(2)
+                startTime = LocalDateTime.now(clock).plusMinutes(10),
+                endTime = LocalDateTime.now(clock).plusHours(2)
             )
         )
 
@@ -275,8 +277,8 @@ class ReservationServiceTest @Autowired constructor(
                     {
                         "parkingLotId": ${savedLot.id},
                         "parkingSpotId": ${newSpot.id},
-                        "startTime": "${LocalDateTime.now().plusHours(5).format(formatter)}",
-                        "endTime": "${LocalDateTime.now().plusHours(7).format(formatter)}"
+                        "startTime": "${LocalDateTime.now(clock).plusHours(5).format(formatter)}",
+                        "endTime": "${LocalDateTime.now(clock).plusHours(7).format(formatter)}"
                     }
                 """.trimIndent())
                 .contentType(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -299,8 +301,8 @@ class ReservationServiceTest @Autowired constructor(
                     {
                         "parkingLotId": ${savedLot.id},
                         "parkingSpotId": ${savedSpot.id},
-                        "startTime": "${LocalDateTime.now().minusHours(2).format(formatter)}",
-                        "endTime": "${LocalDateTime.now().minusHours(1).format(formatter)}"
+                        "startTime": "${LocalDateTime.now(clock).minusHours(2).format(formatter)}",
+                        "endTime": "${LocalDateTime.now(clock).minusHours(1).format(formatter)}"
                     }
                 """.trimIndent())
                 .contentType(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -319,8 +321,8 @@ class ReservationServiceTest @Autowired constructor(
                     {
                         "parkingLotId": ${savedLot.id},
                         "parkingSpotId": ${savedSpot.id},
-                        "startTime": "${LocalDateTime.now().plusHours(5).format(formatter)}",
-                        "endTime": "${LocalDateTime.now().plusHours(3).format(formatter)}"
+                        "startTime": "${LocalDateTime.now(clock).plusHours(5).format(formatter)}",
+                        "endTime": "${LocalDateTime.now(clock).plusHours(3).format(formatter)}"
                     }
                 """.trimIndent())
                 .contentType(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -343,8 +345,8 @@ class ReservationServiceTest @Autowired constructor(
                     {
                         "parkingLotId": ${savedLot.id},
                         "parkingSpotId": ${largeSpot.id},
-                        "startTime": "${LocalDateTime.now().plusHours(5).format(formatter)}",
-                        "endTime": "${LocalDateTime.now().plusHours(7).format(formatter)}"
+                        "startTime": "${LocalDateTime.now(clock).plusHours(5).format(formatter)}",
+                        "endTime": "${LocalDateTime.now(clock).plusHours(7).format(formatter)}"
                     }
                 """.trimIndent())
                 .contentType(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))
@@ -367,8 +369,8 @@ class ReservationServiceTest @Autowired constructor(
                     {
                         "parkingLotId": ${savedLot.id},
                         "parkingSpotId": ${newSpot.id},
-                        "startTime": "${LocalDateTime.now().plusHours(5).format(formatter)}",
-                        "endTime": "${LocalDateTime.now().plusHours(7).format(formatter)}"
+                        "startTime": "${LocalDateTime.now(clock).plusHours(5).format(formatter)}",
+                        "endTime": "${LocalDateTime.now(clock).plusHours(7).format(formatter)}"
                     }
                 """.trimIndent())
                 .contentType(MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8))

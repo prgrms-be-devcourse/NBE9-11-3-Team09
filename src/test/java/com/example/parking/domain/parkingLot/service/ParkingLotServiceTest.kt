@@ -13,6 +13,7 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.given
 import org.mockito.kotlin.verify
+import org.springframework.test.util.ReflectionTestUtils
 import java.util.*
 
 @ExtendWith(MockitoExtension::class)
@@ -115,9 +116,7 @@ internal class ParkingLotServiceTest {
 
     private fun createParkingLot(id: Long, externalId: String, name: String, address: String, totalSpot: Int): ParkingLot {
         val parkingLot = ParkingLot.of(externalId = externalId, name = name, address = address, totalSpot = totalSpot)
-        val field = parkingLot.javaClass.getDeclaredField("id")
-        field.isAccessible = true
-        field.set(parkingLot, id)
+        ReflectionTestUtils.setField(parkingLot, "id", id)
         return parkingLot
     }
 }

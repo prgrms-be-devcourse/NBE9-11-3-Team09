@@ -105,7 +105,7 @@ class AdminReservationServiceTest @Autowired constructor(
             )
         )
         // 관리자 강제 취소는 CONFIRMED 상태만 가능
-        ReflectionTestUtils.setField(savedReservation, "status", ReservationStatus.CONFIRMED)
+        savedReservation.confirm()
         savedReservation = reservationRepository.save(savedReservation)
     }
 
