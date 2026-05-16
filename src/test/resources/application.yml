@@ -1,0 +1,42 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: test
+  datasource:
+    url: jdbc:mysql://localhost:3307/parkingdb_test?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQLDialect
+  jwt:
+    secret: test-secret-key-for-testing-purpose-only-must-be-long-enough-256bit
+
+toss:
+  payment:
+    secret-key: test-secret
+    url: https://api.tosspayments.com/v1/payments/confirm
+
+openapi:
+  seoul:
+    key: test-api-key
+
+app:
+  admin:
+    email: admin@test.com
+    password: admin1234
+    name: 관리자
+    plate-number: 00관0000
+    vehicle-type: SMALL
+
+JWT_SECRET: test-secret-key-for-testing-purpose-only-must-be-long-enough-256bit
+DB_USERNAME: root
+DB_PASSWORD: test

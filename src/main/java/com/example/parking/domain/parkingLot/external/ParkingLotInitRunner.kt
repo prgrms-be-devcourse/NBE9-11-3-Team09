@@ -5,9 +5,11 @@ import com.example.parking.domain.parkingLot.service.ParkingLotSyncService
 import org.slf4j.LoggerFactory
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
+@Profile("!test")
 class ParkingLotInitRunner(
     private val parkingLotSyncService: ParkingLotSyncService,
     private val parkingLotRepository: ParkingLotRepository

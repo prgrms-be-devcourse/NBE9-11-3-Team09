@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -28,12 +29,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 class AdminReservationServiceTest @Autowired constructor(
     private val mvc: MockMvc,
     private val userRepository: UserRepository,
@@ -52,6 +52,10 @@ class AdminReservationServiceTest @Autowired constructor(
 
     @BeforeEach
     fun setUp() {
+        reservationRepository.deleteAll()
+        parkingSpotRepository.deleteAll()
+        parkingLotRepository.deleteAll()
+        userRepository.deleteAll()
         adminUser = userRepository.save(
             User(
                 email = "admin@test.com",
@@ -102,6 +106,7 @@ class AdminReservationServiceTest @Autowired constructor(
         )
         // 관리자 강제 취소는 CONFIRMED 상태만 가능
         ReflectionTestUtils.setField(savedReservation, "status", ReservationStatus.CONFIRMED)
+        savedReservation = reservationRepository.save(savedReservation)
     }
 
     @Test
