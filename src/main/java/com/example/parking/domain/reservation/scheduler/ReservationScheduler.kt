@@ -32,7 +32,7 @@ class ReservationScheduler(
 
     private fun cleanupSelectionTimeout(now: LocalDateTime) {
         val limit = now.minusMinutes(5)
-        reservationRepository.findSelectionTimeout(limit).forEach { res ->
+        reservationRepository.findQSelectionTimeout(limit).forEach { res ->
             res.cancel()
             res.parkingSpot.updateStatus(SpotStatus.AVAILABLE)
             val lotId = checkNotNull(res.parkingSpot.parkingLot.id)
@@ -47,7 +47,7 @@ class ReservationScheduler(
     }
 
     private fun autoCheckIn(now: LocalDateTime) {
-        reservationRepository.findToAutoCheckIn(now).forEach { res ->
+        reservationRepository.findQToAutoCheckIn(now).forEach { res ->
             res.parkingSpot.updateStatus(SpotStatus.PARKED)
             res.complete()
             val lotId = checkNotNull(res.parkingSpot.parkingLot.id)
@@ -62,7 +62,7 @@ class ReservationScheduler(
     }
 
     private fun autoCheckOut(now: LocalDateTime) {
-        reservationRepository.findToAutoCheckOut(now).forEach { res ->
+        reservationRepository.findQToAutoCheckOut(now).forEach { res ->
             res.parkingSpot.updateStatus(SpotStatus.AVAILABLE)
             val lotId = checkNotNull(res.parkingSpot.parkingLot.id)
             val spotDto = ParkingSpotDto(res.parkingSpot)

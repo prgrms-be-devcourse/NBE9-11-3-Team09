@@ -43,12 +43,12 @@ class ReservationService(
 
     // [CUS-04] 내 예약 목록 조회
     fun getMyReservations(userId: Long, status: ReservationStatus?): List<ReservationResDto> =
-        reservationRepository.findAllByUserIdWithDetails(userId, status)
+        reservationRepository.findQAllByUserIdWithDetails(userId, status)
             .map { ReservationResDto.from(it) }
 
     // [CUS-04] 내 특정 예약 상세 조회
     fun getReservationDetail(reservationId: Long, userId: Long): ReservationResDto {
-        val reservation = reservationRepository.findByIdAndUserIdWithDetails(reservationId, userId)
+        val reservation = reservationRepository.findQByIdAndUserId(reservationId, userId)
             ?: throw IllegalArgumentException("존재하지 않거나 권한이 없는 예약입니다.")
         return ReservationResDto.from(reservation)
     }
@@ -56,7 +56,7 @@ class ReservationService(
     // [CUS-04] 예약 취소
     @Transactional
     fun cancelReservation(reservationId: Long, userId: Long?, isForced: Boolean) {
-        val reservation = reservationRepository.findByIdWithParkingSpot(reservationId)
+        val reservation = reservationRepository.findQByIdWithParkingSpot(reservationId)
             ?: throw IllegalArgumentException("존재하지 않는 예약입니다.")
 
         if (reservation.status == ReservationStatus.CANCELED) {
@@ -185,7 +185,7 @@ class ReservationService(
     }
 
     private fun validateNoOverlap(spot: ParkingSpot, start: LocalDateTime, end: LocalDateTime) {
-        val overlapCount = reservationRepository.countOverlappingReservations(
+        val overlapCount = reservationRepository.countQOverlappingReservations(
             checkNotNull(spot.id), start, end
         )
         if (overlapCount > 0) {
@@ -199,7 +199,7 @@ class ReservationService(
             ReservationStatus.CONFIRMED,
             ReservationStatus.COMPLETED
         )
-        if (reservationRepository.existsByUserIdAndParkingLotIdAndStatusIn(userId, parkingLotId, activeStatuses)) {
+        if (reservationRepository.existsQByUserIdAndParkingLotIdAndStatusIn(userId, parkingLotId, activeStatuses)) {
             throw IllegalStateException("이미 이 주차장에 진행 중인 예약이 존재합니다. 1주차장 당 1자리만 이용 가능합니다.")
         }
     }
@@ -219,7 +219,7 @@ class ReservationService(
 
     @Transactional
     fun cancelIfUnpaid(reservationId: Long) {
-        reservationRepository.findByIdWithParkingSpot(reservationId)?.let { res ->
+        reservationRepository.findQByIdWithParkingSpot(reservationId)?.let { res ->
             if (res.status == ReservationStatus.PENDING && res.paymentRequestedAt == null) {
                 res.cancel()
                 if (res.parkingSpot.status == SpotStatus.OCCUPIED) {
@@ -234,7 +234,7 @@ class ReservationService(
 
     @Transactional
     fun startPaymentProcess(reservationId: Long) {
-        val res = reservationRepository.findByIdWithParkingSpot(reservationId)
+        val res = reservationRepository.findQByIdWithParkingSpot(reservationId)
             ?: throw IllegalArgumentException("존재하지 않는 예약입니다.")
         res.startPayment()
         res.parkingSpot.updateStatus(SpotStatus.PAYING)
@@ -243,7 +243,7 @@ class ReservationService(
 
     @Transactional
     fun completePayment(reservationId: Long) {
-        val res = reservationRepository.findByIdWithParkingSpot(reservationId)
+        val res = reservationRepository.findQByIdWithParkingSpot(reservationId)
             ?: throw IllegalArgumentException("존재하지 않는 예약입니다.")
         res.confirm()
         if (res.parkingSpot.status == SpotStatus.PAYING) {
