@@ -14,5 +14,16 @@ services:
     volumes:
       - parking-mysql-data:/var/lib/mysql
 
+  mysql-test:
+    image: mysql:8.0
+    container_name: parking-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: parkingdb_test
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"
+
 volumes:
   parking-mysql-data:
