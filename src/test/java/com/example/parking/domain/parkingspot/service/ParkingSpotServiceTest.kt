@@ -1,9 +1,9 @@
 package com.example.parking.domain.parkingspot.service
 
-import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingLot.entity.ParkingLot
 import com.example.parking.domain.parkingLot.repository.ParkingLotRepository
 import com.example.parking.domain.parkingspot.dto.ParkingSpotDto
+import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.entity.SpotStatus
 import com.example.parking.domain.parkingspot.entity.SpotType
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
@@ -17,8 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.UUID
+import java.util.*
 
 @SpringBootTest
 @Transactional
@@ -36,15 +35,12 @@ class ParkingSpotServiceTest {
 
     @BeforeEach
     fun setUp() {
-        val parkingLot = ParkingLot.builder()
-            .externalId("test-lot-${UUID.randomUUID()}")
-            .name("테스트 주차장")
-            .address("서울시 테스트구")
-            .totalSpot(10)
-            .price(1000)
-            .operationStartTime(LocalTime.of(0, 0))
-            .operationEndTime(LocalTime.of(23, 59))
-            .build()
+        val parkingLot = ParkingLot.of(
+            externalId = "test-lot-${UUID.randomUUID()}",
+            name = "테스트 주차장",
+            address = "서울시 테스트구",
+            totalSpot = 10
+        )
         savedLot = parkingLotRepository.save(parkingLot)
         savedSpot = parkingSpotRepository.save(ParkingSpot(savedLot, "A-01", SpotType.SMALL))
     }
@@ -88,7 +84,7 @@ class ParkingSpotServiceTest {
         parkingSpotRepository.saveAll(listOf(available, occupied))
 
         // when
-        val result: List<ParkingSpotDto> = parkingSpotService.findAvailableSpots(savedLot.id)
+        val result: List<ParkingSpotDto> = parkingSpotService.findAvailableSpots(checkNotNull(savedLot.id))
 
         // then
         assertThat(result).hasSize(2)
@@ -154,7 +150,7 @@ class ParkingSpotServiceTest {
     @DisplayName("subscribe 호출 시 SseEmitter가 반환된다")
     fun subscribe_returnsSseEmitter() {
         // when
-        val emitter: SseEmitter = parkingSpotService.subscribe(savedLot.id)
+        val emitter: SseEmitter = parkingSpotService.subscribe(checkNotNull(savedLot.id))
 
         // then
         assertThat(emitter).isNotNull()

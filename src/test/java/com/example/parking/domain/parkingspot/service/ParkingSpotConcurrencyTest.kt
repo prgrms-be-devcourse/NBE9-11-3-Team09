@@ -1,8 +1,8 @@
 package com.example.parking.domain.parkingspot.service
 
-import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingLot.entity.ParkingLot
 import com.example.parking.domain.parkingLot.repository.ParkingLotRepository
+import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.entity.SpotType
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.support.TransactionTemplate
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.util.Collections
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
@@ -37,14 +35,11 @@ class ParkingSpotConcurrencyTest {
     @BeforeEach
     fun setUp() {
         savedSpotId = transactionTemplate.execute {
-            val parkingLot = ParkingLot(
+            val parkingLot = ParkingLot.of(
                 externalId = "test-lot-${UUID.randomUUID()}",
                 name = "테스트 주차장",
                 address = "서울시 테스트구",
-                totalSpot = 10,
-                price = 1000,
-                operationStartTime = LocalTime.of(0, 0),
-                operationEndTime = LocalTime.of(23, 59)
+                totalSpot = 10
             )
             val savedLot = parkingLotRepository.save(parkingLot)
             val spot = ParkingSpot(savedLot, "A-01", SpotType.SMALL)
@@ -100,14 +95,11 @@ class ParkingSpotConcurrencyTest {
     fun tryReserve_gangnamTraffic() {
         // given - 강남 주차장 자리 1개 생성
         val spotId = transactionTemplate.execute {
-            val gangnamLot = ParkingLot(
+            val gangnamLot = ParkingLot.of(
                 externalId = "gangnam-lot-${UUID.randomUUID()}",
                 name = "강남역 공영주차장",
                 address = "서울시 강남구 강남대로",
-                totalSpot = 100,
-                price = 5000,
-                operationStartTime = LocalTime.of(0, 0),
-                operationEndTime = LocalTime.of(23, 59)
+                totalSpot = 100
             )
             val savedLot = parkingLotRepository.save(gangnamLot)
             val spot = ParkingSpot(savedLot, "G-01", SpotType.SMALL)
