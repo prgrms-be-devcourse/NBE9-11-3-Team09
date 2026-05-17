@@ -12,5 +12,9 @@ interface ParkingLotRepository : JpaRepository<ParkingLot, Long> {
     fun findByExternalId(externalId: String): Optional<ParkingLot>
 
     // 주소(동) 기준 주차장 검색
-    fun findByAddressContaining(dong: String, pageable: Pageable): Page<ParkingLot>
+    fun findByNameContainingOrAddressContaining(
+        name: String,
+        address: String,
+        pageable: Pageable
+    ): Page<ParkingLot>
 }

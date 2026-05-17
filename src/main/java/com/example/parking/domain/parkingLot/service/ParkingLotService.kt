@@ -16,12 +16,19 @@ class ParkingLotService(
 ) {
 
     // [CUS-01] 전체 주차장 조회, 동 검색
-    @Cacheable(value = ["parkingLots"], key = "#dong == null || #dong.isBlank() ? 'all' : #dong")
-    fun findAll(dong: String?, pageable: Pageable): Page<ParkingLotResDto> {
-        val parkingLots = if (dong.isNullOrBlank()) {
+    @Cacheable(
+        value = ["parkingLots"],
+        key = "(#keyword == null || #keyword.isBlank() ? 'all' : #keyword) + '-' + #pageable.pageNumber + '-' + #pageable.pageSize"
+    )
+    fun findAll(keyword: String?, pageable: Pageable): Page<ParkingLotResDto> {
+        val parkingLots = if (keyword.isNullOrBlank()) {
             parkingLotRepository.findAll(pageable)
         } else {
-            parkingLotRepository.findByAddressContaining(dong, pageable)
+            parkingLotRepository.findByNameContainingOrAddressContaining(
+                keyword,
+                keyword,
+                pageable
+            )
         }
 
         return parkingLots.map { ParkingLotResDto.from(it) }

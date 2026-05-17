@@ -31,11 +31,11 @@ class ParkingLotController(
     @GetMapping
     fun getParkingLots(
         @RequestParam(required = false)
-        dong: String?,
+        keyword: String?,
         pageable: Pageable
     ): ResponseEntity<RsData<Page<ParkingLotResDto>>> {
 
-        val data = parkingLotService.findAll(dong, pageable)
+        val data = parkingLotService.findAll(keyword, pageable)
 
         return ResponseEntity.ok(
             RsData(
