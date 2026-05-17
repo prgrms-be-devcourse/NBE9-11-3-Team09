@@ -7,9 +7,12 @@ import com.example.parking.domain.reservation.entity.QReservation.Companion.rese
 import com.example.parking.domain.reservation.entity.Reservation
 import com.example.parking.domain.reservation.entity.ReservationStatus
 import com.example.parking.domain.user.entity.QUser.Companion.user
+import com.querydsl.core.types.OrderSpecifier
+import com.querydsl.core.types.dsl.PathBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.support.PageableExecutionUtils
 import java.time.LocalDateTime
 
@@ -21,6 +24,7 @@ class ReservationRepositoryImpl(
     override fun findQByIdAndUserId(reservationId: Long, userId: Long): Reservation? {
         return queryFactory
             .selectFrom(reservation)
+            .join(reservation.user, user).fetchJoin()
             .join(reservation.parkingLot, parkingLot).fetchJoin()
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
             .where(
@@ -30,11 +34,12 @@ class ReservationRepositoryImpl(
             .fetchOne()
     }
 
-    // 예약 단건 조회 (주차 자리 포함)
+    // 예약 단건 조회 (주차 자리 + 주차장 포함)
     override fun findQByIdWithParkingSpot(id: Long): Reservation? {
         return queryFactory
             .selectFrom(reservation)
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
+            .join(parkingSpot.parkingLot, parkingLot).fetchJoin()
             .where(reservation.id.eq(id))
             .fetchOne()
     }
@@ -54,12 +59,15 @@ class ReservationRepositoryImpl(
 
     // [ADM] 관리자 - 특정 유저 예약 목록 페이징 조회
     override fun findQAllByUserIdWithDetailsPage(userId: Long, pageable: Pageable): Page<Reservation> {
+        val orderSpecifiers = getOrderSpecifiers(pageable)
+
         val content = queryFactory
             .selectFrom(reservation)
             .join(reservation.user, user).fetchJoin()
             .join(reservation.parkingLot, parkingLot).fetchJoin()
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
             .where(reservation.user.id.eq(userId))
+            .orderBy(*orderSpecifiers)
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
@@ -75,11 +83,14 @@ class ReservationRepositoryImpl(
 
     // [ADM] 관리자 - 전체 예약 목록 페이징 조회
     override fun findQAllWithDetailsPage(pageable: Pageable): Page<Reservation> {
+        val orderSpecifiers = getOrderSpecifiers(pageable)
+
         val content = queryFactory
             .selectFrom(reservation)
             .join(reservation.user, user).fetchJoin()
             .join(reservation.parkingLot, parkingLot).fetchJoin()
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
+            .orderBy(*orderSpecifiers)
             .offset(pageable.offset)
             .limit(pageable.pageSize.toLong())
             .fetch()
@@ -129,6 +140,7 @@ class ReservationRepositoryImpl(
         return queryFactory
             .selectFrom(reservation)
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
+            .join(parkingSpot.parkingLot, parkingLot).fetchJoin()
             .where(
                 reservation.status.eq(ReservationStatus.CONFIRMED),
                 reservation.startTime.loe(now)
@@ -141,6 +153,7 @@ class ReservationRepositoryImpl(
         return queryFactory
             .selectFrom(reservation)
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
+            .join(parkingSpot.parkingLot, parkingLot).fetchJoin()
             .where(
                 reservation.status.eq(ReservationStatus.COMPLETED),
                 reservation.endTime.loe(now),
@@ -154,6 +167,7 @@ class ReservationRepositoryImpl(
         return queryFactory
             .selectFrom(reservation)
             .join(reservation.parkingSpot, parkingSpot).fetchJoin()
+            .join(parkingSpot.parkingLot, parkingLot).fetchJoin()
             .where(
                 reservation.status.eq(ReservationStatus.PENDING),
                 reservation.paymentRequestedAt.isNull,
@@ -177,5 +191,18 @@ class ReservationRepositoryImpl(
                 reservation.status.`in`(statuses)
             )
             .fetchFirst() != null
+    }
+
+    // pageable.sort → OrderSpecifier 변환 (기본: createdAt DESC)
+    private fun getOrderSpecifiers(pageable: Pageable): Array<OrderSpecifier<*>> {
+        if (!pageable.sort.isSorted) {
+            return arrayOf(reservation.createdAt.desc())
+        }
+
+        val pathBuilder = PathBuilder(Reservation::class.java, "reservation")
+        return pageable.sort.map { order ->
+            val path = pathBuilder.getComparable(order.property, Comparable::class.java)
+            if (order.direction == Sort.Direction.ASC) path.asc() else path.desc()
+        }.toList().toTypedArray()
     }
 }
