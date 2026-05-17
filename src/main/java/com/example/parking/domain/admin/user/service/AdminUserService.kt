@@ -14,17 +14,7 @@ class AdminUserService(
     private val userRepository: UserRepository
 ) {
     fun getAdminUsers(keyword: String?, pageable: Pageable): Page<AdminUserResDto> {
-        if (keyword.isNullOrBlank()) {
-            return userRepository.findByRole(UserRole.USER, pageable)
-                .map(AdminUserResDto::from)
-        }
-
-        return userRepository.findByRoleAndNameContainingIgnoreCaseOrRoleAndEmailContainingIgnoreCase(
-            UserRole.USER,
-            keyword,
-            UserRole.USER,
-            keyword,
-            pageable
-        ).map(AdminUserResDto::from)
+        return userRepository.searchAdminUsers(keyword, pageable)
+            .map(AdminUserResDto::from)
     }
 }
