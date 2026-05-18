@@ -28,3 +28,6 @@ spring:
     secret: ${JWT_SECRET}
   profiles:
     active: local
+
+kakao:
+  rest-api-key: ${KAKAO_REST_API_KEY}

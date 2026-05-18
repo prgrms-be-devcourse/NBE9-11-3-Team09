@@ -1,6 +1,7 @@
 package com.example.parking.domain.parkingLot.controller
 
-import com.example.parking.domain.parkingLot.dto.ParkingLotResDto
+import com.example.parking.domain.parkingLot.external.dto.NearbyParkingLotResDto
+import com.example.parking.domain.parkingLot.external.dto.ParkingLotResDto
 import com.example.parking.domain.parkingLot.service.ParkingLotService
 import com.example.parking.global.response.RsData
 import io.swagger.v3.oas.annotations.Operation
@@ -63,6 +64,32 @@ class ParkingLotController(
             RsData(
                 "주차장 상세 조회가 완료되었습니다.",
                 "200-2",
+                data
+            )
+        )
+    }
+
+    @Operation(
+        summary = "주변 주차장 검색",
+        description = "사용자 위치(위도/경도) 기준 반경 내 주차장을 가까운 순으로 조회합니다."
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 완료"),
+        ApiResponse(responseCode = "400", description = "잘못된 좌표/반경")
+    )
+    @GetMapping("/nearby")
+    fun getNearbyParkingLots(
+        @RequestParam lat: Double,
+        @RequestParam lng: Double,
+        @RequestParam(defaultValue = "1000") radius: Int
+    ): ResponseEntity<RsData<List<NearbyParkingLotResDto>>> {
+
+        val data = parkingLotService.findNearby(lat, lng, radius)
+
+        return ResponseEntity.ok(
+            RsData(
+                "주변 주차장 조회가 완료되었습니다.",
+                "200-3",
                 data
             )
         )

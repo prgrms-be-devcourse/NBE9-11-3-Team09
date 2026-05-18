@@ -1,5 +1,6 @@
 package com.example.parking.domain.parkingLot.external.config
 
+import com.example.parking.domain.parkingLot.external.client.KakaoGeocodingClient
 import com.example.parking.domain.parkingLot.external.client.SeoulParkingApiClient
 import com.example.parking.domain.parkingLot.external.exception.ExternalApiException
 import org.springframework.context.annotation.Bean
@@ -39,5 +40,21 @@ class ParkingApiClientConfig {
             .build()
 
         return factory.createClient(SeoulParkingApiClient::class.java)
+    }
+
+    @Bean  // ⭐ 별도 빈으로 등록
+    fun kakaoGeocodingRestClient(): RestClient =
+        RestClient.builder()
+            .baseUrl("https://dapi.kakao.com")
+            .defaultHeader("Accept", "application/json")  // ⭐ 헤더 명시
+            .build()
+
+    @Bean
+    fun kakaoGeocodingClient(
+        kakaoGeocodingRestClient: RestClient  // ⭐ 파라미터 이름이 빈 이름과 일치해야 매칭됨
+    ): KakaoGeocodingClient {
+        val adapter = RestClientAdapter.create(kakaoGeocodingRestClient)
+        val factory = HttpServiceProxyFactory.builderFor(adapter).build()
+        return factory.createClient(KakaoGeocodingClient::class.java)
     }
 }

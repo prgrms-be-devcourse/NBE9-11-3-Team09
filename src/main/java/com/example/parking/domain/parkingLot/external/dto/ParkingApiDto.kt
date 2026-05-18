@@ -44,6 +44,12 @@ class ParkingApiDto {
         val addr: String?,
 
         @JsonProperty("TPKCT")
-        val tpkct: Double?
+        val tpkct: Double?,
+
+        @JsonProperty("LAT")
+        val lat: Double?,
+
+        @JsonProperty("LOT")
+        val lot: Double?
     )
 }
