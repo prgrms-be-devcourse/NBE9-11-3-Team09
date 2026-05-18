@@ -21,10 +21,10 @@ class AdminReservationService(
 
     fun getAdminReservations(userId: Long?, pageable: Pageable): Page<AdminReservationResDto> {
         return if (userId != null) {
-            reservationRepository.findAllByUserIdWithDetailsPage(userId, pageable)
+            reservationRepository.findQAllByUserIdWithDetailsPage(userId, pageable)
                 .map { AdminReservationResDto.from(it) }
         } else {
-            reservationRepository.findAllWithDetailsPage(pageable)
+            reservationRepository.findQAllWithDetailsPage(pageable)
                 .map { AdminReservationResDto.from(it) }
         }
     }
