@@ -1,8 +1,6 @@
 package com.example.parking.domain.parkingLot.repository
 
 import com.example.parking.domain.parkingLot.entity.ParkingLot
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
@@ -12,9 +10,9 @@ interface ParkingLotRepository : JpaRepository<ParkingLot, Long>, ParkingLotRepo
     fun findByExternalId(externalId: String): Optional<ParkingLot>
 
     // 주소(동) 기준 주차장 검색
-    fun findByNameContainingOrAddressContaining(
-        name: String,
-        address: String,
-        pageable: Pageable
-    ): Page<ParkingLot>
+//    fun findByNameContainingOrAddressContaining(
+//        name: String,
+//        address: String,
+//        pageable: Pageable
+//    ): Page<ParkingLot>
 }
