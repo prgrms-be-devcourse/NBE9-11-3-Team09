@@ -133,13 +133,27 @@ class ReservationService(
         if (end.isBefore(start)) {
             throw IllegalArgumentException("종료 시간이 시작 시간보다 앞설 수 없습니다.")
         }
+
+        val today = LocalDateTime.now(clock).toLocalDate()
+        val startDate = start.toLocalDate()
+        val daysFromToday = java.time.temporal.ChronoUnit.DAYS.between(today, startDate)
+
+        // 내일(+1일), +4일~+6일만 허용 / +2일, +3일은 차단
+        if (daysFromToday == 2L || daysFromToday == 3L) {
+            throw IllegalStateException("해당 날짜는 아직 예약이 오픈되지 않았습니다.")
+        }
+
+        // +7일 이상은 차단
+        if (daysFromToday > 6L) {
+            throw IllegalArgumentException("예약은 최대 6일 후까지만 가능합니다.")
+        }
     }
 
     private fun validateReservationOpenTime() {
-        val hour = LocalDateTime.now(clock).hour
-        if (hour < 22) {
-            throw IllegalStateException("예약은 매일 22시부터 24시까지만 가능합니다.")
-        }
+//        val hour = LocalDateTime.now(clock).hour
+//        if (hour < 22) {
+//            throw IllegalStateException("예약은 매일 22시부터 24시까지만 가능합니다.")
+//        }
     }
 
     private fun findUser(userId: Long): User =
