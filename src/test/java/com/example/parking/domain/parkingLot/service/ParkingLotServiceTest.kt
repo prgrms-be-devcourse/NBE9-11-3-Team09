@@ -3,6 +3,7 @@ package com.example.parking.domain.parkingLot.service
 import com.example.parking.domain.parkingLot.entity.ParkingLot
 import com.example.parking.domain.parkingLot.repository.ParkingLotRepository
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -13,6 +14,10 @@ import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.mockito.kotlin.given
 import org.mockito.kotlin.verify
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageImpl
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.util.ReflectionTestUtils
 import java.util.*
 
@@ -35,54 +40,74 @@ internal class ParkingLotServiceTest {
     }
 
     @Nested
-    @DisplayName("전체 주차장 조회, 동 검색")
+    @DisplayName("전체 주차장 조회, keyword 검색")
     inner class FindAllTest {
 
         @Test
-        @DisplayName("dong이 null이면 전체 주차장 목록을 조회한다")
-        fun findAll_withNullDong_returnsAllParkingLots() {
-            given(parkingLotRepository.findAll()).willReturn(listOf(parkingLot1, parkingLot2))
+        @DisplayName("keyword가 null이면 전체 주차장 목록을 페이징 조회한다")
+        fun findAll_withNullKeyword_returnsAllParkingLots() {
 
-            val result = parkingLotService.findAll(null)
+            // given
+            val pageable = PageRequest.of(0, 10)
+            val page = PageImpl(listOf(parkingLot1, parkingLot2), pageable, 2)
 
-            Assertions.assertThat(result).hasSize(2)
-            Assertions.assertThat(result.map { it.name }).containsExactly("역삼 공영주차장", "삼성 공영주차장")
-            verify(parkingLotRepository).findAll()
+            given(parkingLotRepository.search(null, pageable)).willReturn(page)
+
+            // when
+            val result = parkingLotService.findAll(null, pageable)
+
+            // then
+            assertThat(result.content).hasSize(2)
+            assertThat(result.content.map { it.name })
+                .containsExactly("역삼 공영주차장", "삼성 공영주차장")
+
+            // Page 객체이므로 페이징 정보도 함께 검증 가능
+            assertThat(result.totalElements).isEqualTo(2)
+            assertThat(result.number).isEqualTo(0)
+            assertThat(result.size).isEqualTo(10)
+
+            verify(parkingLotRepository).search(null, pageable)
         }
 
         @Test
-        @DisplayName("dong이 공백이면 전체 주차장 목록을 조회한다")
-        fun findAll_withBlankDong_returnsAllParkingLots() {
-            given(parkingLotRepository.findAll()).willReturn(listOf(parkingLot1, parkingLot2))
+        @DisplayName("keyword가 있으면 이름 또는 주소에 해당 keyword가 포함된 주차장 목록을 조회한다")
+        fun findAll_withKeyword_returnsFilteredParkingLots() {
+            // given
+            val pageable = PageRequest.of(0, 10)
+            val keyword = "역삼"
+            val page = PageImpl(listOf(parkingLot1), pageable, 1)
 
-            val result = parkingLotService.findAll("   ")
+            given(parkingLotRepository.search(keyword, pageable)).willReturn(page)
 
-            Assertions.assertThat(result).hasSize(2)
-            Assertions.assertThat(result.map { it.name }).containsExactly("역삼 공영주차장", "삼성 공영주차장")
-            verify(parkingLotRepository).findAll()
+            // when
+            val result = parkingLotService.findAll(keyword, pageable)
+
+            // then
+            assertThat(result.content).hasSize(1)
+            assertThat(result.content[0].name).isEqualTo("역삼 공영주차장")
+            assertThat(result.totalElements).isEqualTo(1)
+
+            verify(parkingLotRepository).search(keyword, pageable)
         }
 
         @Test
-        @DisplayName("dong이 있으면 해당 동이 포함된 주소의 주차장 목록을 조회한다")
-        fun findAll_withDong_returnsFilteredParkingLots() {
-            given(parkingLotRepository.findByAddressContaining("역삼동")).willReturn(listOf(parkingLot1))
+        @DisplayName("검색 결과가 없으면 빈 Page를 반환한다")
+        fun findAll_withKeyword_returnsEmptyPage() {
+            // given
+            val pageable = PageRequest.of(0, 10)
+            val keyword = "청담"
+            val emptyPage = Page.empty<ParkingLot>(pageable)
 
-            val result = parkingLotService.findAll("역삼동")
+            given(parkingLotRepository.search(keyword, pageable)).willReturn(emptyPage)
 
-            Assertions.assertThat(result).hasSize(1)
-            Assertions.assertThat(result[0].name).isEqualTo("역삼 공영주차장")
-            verify(parkingLotRepository).findByAddressContaining("역삼동")
-        }
+            // when
+            val result = parkingLotService.findAll(keyword, pageable)
 
-        @Test
-        @DisplayName("검색 결과가 없으면 빈 리스트를 반환한다")
-        fun findAll_withDong_returnsEmptyList() {
-            given(parkingLotRepository.findByAddressContaining("청담동")).willReturn(emptyList())
+            // then
+            assertThat(result.content).isEmpty()
+            assertThat(result.totalElements).isZero()
 
-            val result = parkingLotService.findAll("청담동")
-
-            Assertions.assertThat(result).isEmpty()
-            verify(parkingLotRepository).findByAddressContaining("청담동")
+            verify(parkingLotRepository).search(keyword, pageable)
         }
     }
 
