@@ -111,6 +111,11 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.2.1'
+
+    // Hibernate Spatial (POINT 타입 매핑)
+    implementation 'org.hibernate.orm:hibernate-spatial'
+    implementation 'org.locationtech.jts:jts-core:1.19.0'
+    implementation "io.github.openfeign.querydsl:querydsl-spatial:${queryDslVersion}"
 }
 
 tasks.named('test') {

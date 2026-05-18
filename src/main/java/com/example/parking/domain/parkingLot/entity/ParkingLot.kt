@@ -3,6 +3,7 @@ package com.example.parking.domain.parkingLot.entity
 import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import jakarta.persistence.*
 import java.time.LocalTime
+import org.locationtech.jts.geom.Point
 
 @Entity
 @Table(name = "parking_lots")
@@ -19,6 +20,9 @@ class ParkingLot protected constructor(
 
     @Column(nullable = false)
     var totalSpot: Int,
+
+    @Column(name = "location", nullable = true, columnDefinition = "POINT SRID 4326")
+    var location: Point? = null,
 
     @Column(nullable = false)
     var price: Int = DEFAULT_PRICE,
@@ -42,11 +46,13 @@ class ParkingLot protected constructor(
     fun updateInfo(
         name: String,
         address: String,
-        totalSpot: Int
+        totalSpot: Int,
+        location: Point?
     ) {
         this.name = name
         this.address = address
         this.totalSpot = totalSpot
+        this.location = location
     }
 
     companion object {
@@ -59,12 +65,14 @@ class ParkingLot protected constructor(
             externalId: String,
             name: String,
             address: String,
-            totalSpot: Int
+            totalSpot: Int,
+            location: Point?
         ) = ParkingLot(
             externalId = externalId,
             name = name,
             address = address,
-            totalSpot = totalSpot
+            totalSpot = totalSpot,
+            location = location
         )
     }
 }
