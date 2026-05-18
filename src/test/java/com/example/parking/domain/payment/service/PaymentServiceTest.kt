@@ -229,7 +229,7 @@ class PaymentServiceTest {
         val paymentId = 1L
         val userId = 1L
         val tossRequest = TossConfirmReqDto("paymentKey", "orderId", 1000)
-        val tossResponse = TossConfirmResDto()
+        val tossResponse = TossConfirmResDto(paymentKey = "paymentKey", status = "DONE")
 
         ReflectionTestUtils.setField(user, "id", userId)
         ReflectionTestUtils.setField(payment, "status", PaymentStatus.PROCESSING)

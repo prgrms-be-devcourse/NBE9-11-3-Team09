@@ -1,7 +1,9 @@
+
 package com.example.parking.domain.payment.controller
 
 import com.example.parking.domain.payment.dto.PaymentAdminRespDto
 import com.example.parking.domain.payment.dto.PaymentRespDto
+import com.example.parking.domain.payment.entity.PaymentStatus
 import com.example.parking.domain.payment.service.PaymentService
 import com.example.parking.global.response.RsData
 import io.swagger.v3.oas.annotations.Operation
@@ -17,7 +19,6 @@ import org.springframework.web.bind.annotation.*
 class PaymentAdminController(
     private val paymentService: PaymentService
 ) {
-    // [ADM-03] 전체 결제 조회
     @Operation(summary = "전체 결제 조회", description = "관리자 권한으로 시스템 내 전체 결제 내역을 조회합니다.")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "조회 완료"),
@@ -29,7 +30,6 @@ class PaymentAdminController(
         return ResponseEntity.ok(RsData("전체 결제 내역 조회가 완료되었습니다.", "200-1", data))
     }
 
-    // [ADM-04] 고객별 결제 조회
     @Operation(summary = "고객별 결제 조회", description = "특정 고객의 모든 결제 이력을 관리자 권한으로 조회합니다.")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "조회 완료"),
@@ -41,7 +41,18 @@ class PaymentAdminController(
         return ResponseEntity.ok(RsData("고객별 결제 내역 조회가 완료되었습니다.", "200-2", data))
     }
 
-    // [ADM-01] 환불 처리
+    @Operation(summary = "결제 상태별 조회", description = "관리자 권한으로 결제 상태별 내역을 조회합니다.")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 완료"),
+        ApiResponse(responseCode = "400", description = "잘못된 상태값"),
+        ApiResponse(responseCode = "500", description = "서버 내부 오류")
+    )
+    @GetMapping("/status/{status}")
+    fun getPaymentsByStatus(@PathVariable status: PaymentStatus): ResponseEntity<RsData<List<PaymentAdminRespDto>>> {
+        val data: List<PaymentAdminRespDto> = paymentService.getPaymentsByStatus(status)
+        return ResponseEntity.ok(RsData("결제 상태별 내역 조회가 완료되었습니다.", "200-3", data))
+    }
+
     @Operation(summary = "환불 처리", description = "관리자 권한으로 특정 결제 건에 대한 강제 환불을 처리합니다.")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "환불 완료"),
@@ -51,6 +62,6 @@ class PaymentAdminController(
     @PatchMapping("/{paymentId}/refund")
     fun refundPayment(@PathVariable paymentId: Long): ResponseEntity<RsData<PaymentRespDto>> {
         val data = paymentService.refundPayment(paymentId)
-        return ResponseEntity.ok(RsData("환불 처리가 완료되었습니다.", "200-3", data))
+        return ResponseEntity.ok(RsData("환불 처리가 완료되었습니다.", "200-4", data))
     }
 }

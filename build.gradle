@@ -4,7 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '2.3.0'
     id 'org.jetbrains.kotlin.plugin.spring' version '2.3.0'
     id 'org.jetbrains.kotlin.plugin.jpa' version '2.3.0'
-    id 'com.google.devtools.ksp' version '2.3.0' // QueryDSL Q클래스 생성용
+    id 'com.google.devtools.ksp' version '2.3.0'
 }
 
 group = 'com.example'

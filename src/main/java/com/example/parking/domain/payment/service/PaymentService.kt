@@ -2,6 +2,7 @@
 package com.example.parking.domain.payment.service
 
 import com.example.parking.domain.parkingspot.dto.ParkingSpotDto
+import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
 import com.example.parking.domain.payment.dto.PaymentAdminRespDto
 import com.example.parking.domain.payment.dto.PaymentReqDto
@@ -43,9 +44,7 @@ class PaymentService(
         validateDuplicatePayment(request.reservationId)
         validateAmount(reservation, request.amount)
 
-        val updatedCount = parkingSpotRepository.startPayment(
-            reservation.parkingSpot.id
-        )
+        val updatedCount = parkingSpotRepository.startPayment(reservation.parkingSpot.id)
 
         if (updatedCount == 0) {
             log.warn("결제 시작 실패 - 주차자리 상태 변경 실패 spotId: {}", reservation.parkingSpot.id)
@@ -61,9 +60,7 @@ class PaymentService(
 
         paymentRepository.save(payment)
 
-        val spot = parkingSpotRepository.findById(reservation.parkingSpot.id)
-            .orElseThrow()
-
+        val spot = findParkingSpot(reservation.parkingSpot.id)
         sseEmitterManager.notify(spot.parkingLot.id!!, ParkingSpotDto(spot))
 
         log.info("결제 시작 - reservationId: {}, userId: {}", request.reservationId, userId)
@@ -94,10 +91,7 @@ class PaymentService(
         reservationService.completePayment(payment.reservation.id!!)
         entityManager.flush()
 
-        val spot = parkingSpotRepository.findById(
-            payment.reservation.parkingSpot.id
-        ).orElseThrow()
-
+        val spot = findParkingSpot(payment.reservation.parkingSpot.id)
         sseEmitterManager.notify(spot.parkingLot.id!!, ParkingSpotDto(spot))
 
         log.info("결제 승인 완료 - paymentId: {}", paymentId)
@@ -114,6 +108,11 @@ class PaymentService(
         paymentRepository.findAllByUserIdWithReservationAndUser(userId)
             .map { PaymentAdminRespDto.from(it) }
 
+    @Transactional(readOnly = true)
+    fun getPaymentsByStatus(status: PaymentStatus): List<PaymentAdminRespDto> =
+        paymentRepository.findAllByStatus(status)
+            .map { PaymentAdminRespDto.from(it) }
+
     fun refundPayment(paymentId: Long): PaymentRespDto {
         val payment = paymentRepository.findById(paymentId)
             .orElseThrow {
@@ -126,20 +125,14 @@ class PaymentService(
         payment.refund()
         entityManager.flush()
 
-        val updatedCount = parkingSpotRepository.completePayment(
-            payment.reservation.parkingSpot.id
-        )
+        val updatedCount = parkingSpotRepository.completePayment(payment.reservation.parkingSpot.id)
 
         if (updatedCount == 0) {
-            log.warn("환불 실패 - 주차자리 상태 변경 실패 spotId: {}",
-                payment.reservation.parkingSpot.id)
+            log.warn("환불 실패 - 주차자리 상태 변경 실패 spotId: {}", payment.reservation.parkingSpot.id)
             throw IllegalStateException("환불을 처리할 수 없는 상태입니다.")
         }
 
-        val spot = parkingSpotRepository.findById(
-            payment.reservation.parkingSpot.id
-        ).orElseThrow()
-
+        val spot = findParkingSpot(payment.reservation.parkingSpot.id)
         sseEmitterManager.notify(spot.parkingLot.id!!, ParkingSpotDto(spot))
 
         log.info("환불 완료 - paymentId: {}", paymentId)
@@ -154,6 +147,10 @@ class PaymentService(
                 log.warn("결제 실패 - 존재하지 않는 예약 reservationId: {}", reservationId)
                 IllegalArgumentException("존재하지 않는 예약입니다.")
             }
+
+    private fun findParkingSpot(spotId: Long): ParkingSpot =
+        parkingSpotRepository.findById(spotId)
+            .orElseThrow { IllegalStateException("존재하지 않는 주차자리입니다.") }
 
     private fun validateOwner(reservation: Reservation, userId: Long) {
         if (reservation.user.id != userId) {
@@ -188,7 +185,7 @@ class PaymentService(
     }
 
     private fun validateAmount(reservation: Reservation, amount: Int) {
-        val expectedAmount = calculateExpectedAmount(reservation)
+        val expectedAmount = reservation.calculateExpectedAmount()
         if (amount != expectedAmount) {
             log.warn("결제 실패 - 금액 불일치 reservationId: {}", reservation.id)
             throw IllegalArgumentException("결제 금액이 올바르지 않습니다. 예상 금액: $expectedAmount")
@@ -196,23 +193,22 @@ class PaymentService(
     }
 
     private fun validateRefundStatus(payment: Payment) {
-        if (payment.status == PaymentStatus.REFUND) {
-            log.warn("환불 실패 - 이미 환불된 결제 paymentId: {}", payment.id)
-            throw IllegalStateException("이미 환불된 결제입니다.")
-        }
-        if (payment.status != PaymentStatus.COMPLETE) {
-            log.warn("환불 실패 - 환불 불가 상태 paymentId: {}", payment.id)
-            throw IllegalStateException("환불 가능한 상태가 아닙니다.")
+        when (payment.status) {
+            PaymentStatus.REFUND -> {
+                log.warn("환불 실패 - 이미 환불된 결제 paymentId: {}", payment.id)
+                throw IllegalStateException("이미 환불된 결제입니다.")
+            }
+            PaymentStatus.COMPLETE -> {}
+            else -> {
+                log.warn("환불 실패 - 환불 불가 상태 paymentId: {}", payment.id)
+                throw IllegalStateException("환불 가능한 상태가 아닙니다.")
+            }
         }
     }
 
-    private fun calculateExpectedAmount(reservation: Reservation): Int {
-        val minutes = ChronoUnit.MINUTES.between(
-            reservation.startTime,
-            reservation.endTime
-        )
+    private fun Reservation.calculateExpectedAmount(): Int {
+        val minutes = ChronoUnit.MINUTES.between(startTime, endTime)
         val units = minutes / 10.0
-        val price = reservation.parkingLot.price
-        return ceil(units * price).toInt()
+        return ceil(units * parkingLot.price).toInt()
     }
 }
