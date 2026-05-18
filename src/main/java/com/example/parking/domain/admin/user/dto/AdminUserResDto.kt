@@ -17,7 +17,6 @@ data class AdminUserResDto(
     val createdTime: LocalDateTime?
 ) {
     companion object {
-        @JvmStatic
         fun from(user: User): AdminUserResDto =
             AdminUserResDto(
                 user.id,

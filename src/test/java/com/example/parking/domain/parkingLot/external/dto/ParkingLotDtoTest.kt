@@ -13,7 +13,9 @@ class ParkingLotDtoTest {
             pkltCd = "P001",
             pkltNm = "강남주차장",
             addr = "서울 강남구",
-            tpkct = 100.0
+            tpkct = 100.0,
+            lat = 37.4979,
+            lot = 127.0276
         )
 
         // when
@@ -37,7 +39,9 @@ class ParkingLotDtoTest {
             pkltCd = "P002",
             pkltNm = "테스트주차장",
             addr = "서울 송파구",
-            tpkct = null
+            tpkct = null,
+            lat = 37.4979,
+            lot = 127.0276
         )
 
         // when

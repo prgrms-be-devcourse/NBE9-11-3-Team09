@@ -13,7 +13,6 @@ data class UserProfileResDto(
     val role: UserRole
 ) {
     companion object {
-        @JvmStatic
         fun from(user: User): UserProfileResDto =
             UserProfileResDto(
                 user.id,

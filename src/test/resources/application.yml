@@ -40,3 +40,6 @@ app:
 JWT_SECRET: test-secret-key-for-testing-purpose-only-must-be-long-enough-256bit
 DB_USERNAME: root
 DB_PASSWORD: test
+
+kakao:
+  rest-api-key: test-key

@@ -39,7 +39,8 @@ class ParkingSpotServiceTest {
             externalId = "test-lot-${UUID.randomUUID()}",
             name = "테스트 주차장",
             address = "서울시 테스트구",
-            totalSpot = 10
+            totalSpot = 10,
+            location = null
         )
         savedLot = parkingLotRepository.save(parkingLot)
         savedSpot = parkingSpotRepository.save(ParkingSpot(savedLot, "A-01", SpotType.SMALL))

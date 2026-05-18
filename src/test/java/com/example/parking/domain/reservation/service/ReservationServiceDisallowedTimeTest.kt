@@ -77,7 +77,8 @@ class ReservationServiceDisallowedTimeTest @Autowired constructor(
                 externalId = "TEST_001",
                 name = "강남역 공영 주차장",
                 address = "서울시 강남구",
-                totalSpot = 100
+                totalSpot = 100,
+                location = null
             )
         )
 

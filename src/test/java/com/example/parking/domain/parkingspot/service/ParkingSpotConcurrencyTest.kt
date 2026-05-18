@@ -39,7 +39,8 @@ class ParkingSpotConcurrencyTest {
                 externalId = "test-lot-${UUID.randomUUID()}",
                 name = "테스트 주차장",
                 address = "서울시 테스트구",
-                totalSpot = 10
+                totalSpot = 10,
+                location = null
             )
             val savedLot = parkingLotRepository.save(parkingLot)
             val spot = ParkingSpot(savedLot, "A-01", SpotType.SMALL)
@@ -99,7 +100,8 @@ class ParkingSpotConcurrencyTest {
                 externalId = "gangnam-lot-${UUID.randomUUID()}",
                 name = "강남역 공영주차장",
                 address = "서울시 강남구 강남대로",
-                totalSpot = 100
+                totalSpot = 100,
+                location = null
             )
             val savedLot = parkingLotRepository.save(gangnamLot)
             val spot = ParkingSpot(savedLot, "G-01", SpotType.SMALL)

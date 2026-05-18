@@ -74,7 +74,8 @@ class PaymentServiceTest {
             externalId = "TEST_001",
             name = "테스트 주차장",
             address = "서울시",
-            totalSpot = 10
+            totalSpot = 10,
+            location = null
         )
         ReflectionTestUtils.setField(parkingLot, "id", 1L)
 

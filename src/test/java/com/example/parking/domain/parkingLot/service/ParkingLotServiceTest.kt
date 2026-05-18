@@ -115,7 +115,7 @@ internal class ParkingLotServiceTest {
     }
 
     private fun createParkingLot(id: Long, externalId: String, name: String, address: String, totalSpot: Int): ParkingLot {
-        val parkingLot = ParkingLot.of(externalId = externalId, name = name, address = address, totalSpot = totalSpot)
+        val parkingLot = ParkingLot.of(externalId = externalId, name = name, address = address, totalSpot = totalSpot,location = null)
         ReflectionTestUtils.setField(parkingLot, "id", id)
         return parkingLot
     }
