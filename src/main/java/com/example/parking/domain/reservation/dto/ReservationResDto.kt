@@ -17,7 +17,6 @@ data class ReservationResDto(
     val totalPrice: Int
 ) {
     companion object {
-        @JvmStatic
         fun from(reservation: Reservation): ReservationResDto {
             val minutes = ChronoUnit.MINUTES.between(reservation.startTime, reservation.endTime)
             val price = (Math.ceil(minutes / 10.0) * reservation.parkingLot.price).toInt()

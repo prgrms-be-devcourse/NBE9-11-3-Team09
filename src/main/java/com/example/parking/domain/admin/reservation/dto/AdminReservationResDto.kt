@@ -17,7 +17,6 @@ data class AdminReservationResDto(
     val createdTime: LocalDateTime?
 ) {
     companion object {
-        @JvmStatic
         fun from(reservation: Reservation) = AdminReservationResDto(
             reservationId = reservation.id,
             userId = reservation.user.id,

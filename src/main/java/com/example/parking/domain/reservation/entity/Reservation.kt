@@ -78,7 +78,6 @@ class Reservation protected constructor(
     }
 
     companion object {
-        @JvmStatic
         fun of(
             user: User,
             parkingLot: ParkingLot,

@@ -5,19 +5,15 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class ReservationReqDto(
-    @JvmField
     @field:NotNull(message = "주차장 ID는 필수입니다.")
     val parkingLotId: Long,
 
-    @JvmField
     @field:NotNull(message = "주차 자리 ID는 필수입니다.")
     val parkingSpotId: Long,
 
-    @JvmField
     @field:NotNull(message = "시작 시간은 필수입니다.")
     val startTime: String,
 
-    @JvmField
     @field:NotNull(message = "종료 시간은 필수입니다.")
     val endTime: String
 ) {
