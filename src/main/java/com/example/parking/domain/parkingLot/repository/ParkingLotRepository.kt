@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.*
 
-interface ParkingLotRepository : JpaRepository<ParkingLot, Long> {
+interface ParkingLotRepository : JpaRepository<ParkingLot, Long>, ParkingLotRepositoryCustom {
 
     // 외부 API 주차장 식별값으로 조회
     fun findByExternalId(externalId: String): Optional<ParkingLot>
