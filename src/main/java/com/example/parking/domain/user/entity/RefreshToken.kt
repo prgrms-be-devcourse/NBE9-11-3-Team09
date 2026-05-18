@@ -33,7 +33,6 @@ class RefreshToken(
     }
 
     companion object {
-        @JvmStatic
         fun of(
             userId: Long,
             token: String,

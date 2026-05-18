@@ -1,22 +1,20 @@
-package com.example.parking.domain.user.controller;
+package com.example.parking.domain.user.controller
 
-import com.example.parking.domain.user.dto.*;
-import com.example.parking.domain.user.service.AuthService;
-import com.example.parking.domain.user.service.UserService;
-import com.example.parking.global.response.RsData;
-import com.example.parking.global.security.CustomUserDetails;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import com.example.parking.domain.user.dto.*
+import com.example.parking.domain.user.service.AuthService
+import com.example.parking.domain.user.service.UserService
+import com.example.parking.global.response.RsData
+import com.example.parking.global.security.CustomUserDetails
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequiredArgsConstructor
 @Tag(name = "회원", description = "회원 관련 API")
 class UserController(
     private val userService: UserService,
