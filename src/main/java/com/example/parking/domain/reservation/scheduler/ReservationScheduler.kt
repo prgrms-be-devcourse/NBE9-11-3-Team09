@@ -64,6 +64,7 @@ class ReservationScheduler(
     private fun autoCheckOut(now: LocalDateTime) {
         reservationRepository.findQToAutoCheckOut(now).forEach { res ->
             res.parkingSpot.updateStatus(SpotStatus.AVAILABLE)
+            res.finish()
             val lotId = checkNotNull(res.parkingSpot.parkingLot.id)
             val spotDto = ParkingSpotDto(res.parkingSpot)
             TransactionSynchronizationManager.registerSynchronization(object : TransactionSynchronization {

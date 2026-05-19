@@ -73,6 +73,10 @@ class Reservation protected constructor(
         this.status = ReservationStatus.COMPLETED
     }
 
+    fun finish() {
+        this.status = ReservationStatus.FINISHED
+    }
+
     fun pending() {
         this.status = ReservationStatus.PENDING
     }
