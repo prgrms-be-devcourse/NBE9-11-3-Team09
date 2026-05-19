@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.security.MessageDigest
 
 @SpringBootTest
 @Transactional
@@ -52,7 +53,8 @@ class AuthServiceTest @Autowired constructor(
         assertThat(result.tokenType).isEqualTo("Bearer")
 
         val savedRefreshToken = refreshTokenRepository.findByUserId(savedUser.id!!).orElseThrow()
-        assertThat(savedRefreshToken.token).isEqualTo(result.refreshToken)
+        assertThat(savedRefreshToken.token).isEqualTo(hashRefreshToken(result.refreshToken))
+        assertThat(savedRefreshToken.token).isNotEqualTo(result.refreshToken)
         assertThat(jwtUtil.getTokenType(result.accessToken)).isEqualTo("access")
         assertThat(jwtUtil.getTokenType(result.refreshToken)).isEqualTo("refresh")
     }
@@ -239,7 +241,8 @@ class AuthServiceTest @Autowired constructor(
 
         val updatedToken = refreshTokenRepository.findByUserId(savedUser.id!!).orElseThrow()
         assertThat(updatedToken.id).isEqualTo(firstTokenId)
-        assertThat(updatedToken.token).isEqualTo(secondRefreshToken)
+        assertThat(updatedToken.token).isEqualTo(hashRefreshToken(secondRefreshToken))
+        assertThat(updatedToken.token).isNotEqualTo(secondRefreshToken)
     }
 
     private fun createUser(
@@ -262,6 +265,13 @@ class AuthServiceTest @Autowired constructor(
                 status = UserStatus.ACTIVE
             )
         )
+    }
+
+    private fun hashRefreshToken(refreshToken: String): String {
+        val digest = MessageDigest.getInstance("SHA-256")
+            .digest(refreshToken.toByteArray(Charsets.UTF_8))
+
+        return digest.joinToString("") { "%02x".format(it) }
     }
 
     companion object {
