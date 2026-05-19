@@ -58,7 +58,20 @@ class AuthServiceTest @Autowired constructor(
     }
 
     @Test
-    @DisplayName("비밀번호가 일치하지 않으면 로그인할 수 없다")
+    @DisplayName("존재하지 않는 이메일이면 통합 로그인 실패 메시지를 반환한다")
+    fun login_fails_whenEmailDoesNotExist() {
+        val reqDto = LoginReqDto(
+            userEmail = "not-found@test.com",
+            password = "test1234"
+        )
+
+        assertThatThrownBy { authService.login(reqDto) }
+            .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage(LOGIN_FAIL_MESSAGE)
+    }
+
+    @Test
+    @DisplayName("비밀번호가 일치하지 않으면 통합 로그인 실패 메시지를 반환한다")
     fun login_fails_whenPasswordIsWrong() {
         createUser(
             email = "auth2@test.com",
@@ -75,6 +88,7 @@ class AuthServiceTest @Autowired constructor(
 
         assertThatThrownBy { authService.login(reqDto) }
             .isInstanceOf(IllegalArgumentException::class.java)
+            .hasMessage(LOGIN_FAIL_MESSAGE)
     }
 
     @Test
@@ -248,5 +262,9 @@ class AuthServiceTest @Autowired constructor(
                 status = UserStatus.ACTIVE
             )
         )
+    }
+
+    companion object {
+        private const val LOGIN_FAIL_MESSAGE = "이메일 또는 비밀번호가 올바르지 않습니다."
     }
 }

@@ -25,11 +25,13 @@ class AuthService(
 ) {
     @Transactional
     fun login(reqDto: LoginReqDto): LoginResDto {
+        val loginFailMessage = "이메일 또는 비밀번호가 올바르지 않습니다."
+
         val user = userRepository.findByEmail(reqDto.userEmail)
-            .orElseThrow { IllegalArgumentException("존재하지 않는 이메일입니다.") }
+            .orElseThrow { IllegalArgumentException(loginFailMessage) }
 
         if (!passwordEncoder.matches(reqDto.password, user.password)) {
-            throw IllegalArgumentException("비밀번호가 일치하지 않습니다.")
+            throw IllegalArgumentException(loginFailMessage)
         }
 
         if (user.status != UserStatus.ACTIVE) {
