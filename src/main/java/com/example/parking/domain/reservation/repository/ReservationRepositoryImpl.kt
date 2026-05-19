@@ -177,9 +177,9 @@ class ReservationRepositoryImpl(
     }
 
     // 동일 주차장 진행 중인 예약 존재 여부 확인
-    override fun existsQByUserIdAndParkingLotIdAndStatusIn(
+    override fun existsQByUserIdAndDateAndStatusIn(
         userId: Long,
-        parkingLotId: Long,
+        date: java.time.LocalDate,
         statuses: List<ReservationStatus>
     ): Boolean {
         return queryFactory
@@ -187,8 +187,11 @@ class ReservationRepositoryImpl(
             .from(reservation)
             .where(
                 reservation.user.id.eq(userId),
-                reservation.parkingLot.id.eq(parkingLotId),
-                reservation.status.`in`(statuses)
+                reservation.status.`in`(statuses),
+                reservation.startTime.between(
+                    date.atStartOfDay(),
+                    date.plusDays(1).atStartOfDay()
+                )
             )
             .fetchFirst() != null
     }

@@ -28,9 +28,9 @@ interface ReservationRepositoryCustom {
 
     fun findQSelectionTimeout(limit: LocalDateTime): List<Reservation>
 
-    fun existsQByUserIdAndParkingLotIdAndStatusIn(
+    fun existsQByUserIdAndDateAndStatusIn(
         userId: Long,
-        parkingLotId: Long,
+        date: java.time.LocalDate,
         statuses: List<ReservationStatus>
     ): Boolean
 }

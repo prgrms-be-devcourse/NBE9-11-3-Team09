@@ -111,7 +111,7 @@ class ReservationService(
         val spot = reserveSpot(parkingSpot, reqDto.parkingSpotId)
 
         validateNoOverlap(spot, start, end)
-        validateNoActiveReservation(userId, reqDto.parkingLotId)
+        validateNoActiveReservation(userId, start)
 
         val savedReservation = reservationRepository.save(
             Reservation.of(user, parkingLot, spot, start, end)
@@ -209,14 +209,14 @@ class ReservationService(
         }
     }
 
-    private fun validateNoActiveReservation(userId: Long, parkingLotId: Long) {
+    private fun validateNoActiveReservation(userId: Long, start: LocalDateTime) {
         val activeStatuses = listOf(
             ReservationStatus.PENDING,
             ReservationStatus.CONFIRMED,
-            ReservationStatus.COMPLETED
+            ReservationStatus.COMPLETED  // 주차 중인 경우도 중복 불가
         )
-        if (reservationRepository.existsQByUserIdAndParkingLotIdAndStatusIn(userId, parkingLotId, activeStatuses)) {
-            throw IllegalStateException("이미 이 주차장에 진행 중인 예약이 존재합니다. 1주차장 당 1자리만 이용 가능합니다.")
+        if (reservationRepository.existsQByUserIdAndDateAndStatusIn(userId, start.toLocalDate(), activeStatuses)) {
+            throw IllegalStateException("해당 날짜에 이미 진행 중인 예약이 존재합니다. 하루에 1자리만 이용 가능합니다.")
         }
     }
 
