@@ -167,12 +167,16 @@ class PaymentService(
                 throw IllegalStateException("이미 결제 진행 중인 예약입니다.")
             }
             ReservationStatus.COMPLETED -> {
-                log.warn("결제 실패 - 이미 완료된 예약 reservationId: {}", reservation.id)
+                log.warn("결제 실패 - 이미 주차중인 예약 reservationId: {}", reservation.id)
                 throw IllegalStateException("이미 완료된 예약입니다.")
             }
             ReservationStatus.CANCELED -> {
                 log.warn("결제 실패 - 취소된 예약 reservationId: {}", reservation.id)
                 throw IllegalStateException("취소된 예약은 결제할 수 없습니다.")
+            }
+            ReservationStatus.FINISHED -> {
+                log.warn("결제 실패 - 이미 완료된 예약 reservationId: {}", reservation.id)
+                throw IllegalStateException("이미 완료된 예약입니다.")
             }
         }
     }
