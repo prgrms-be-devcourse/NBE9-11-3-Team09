@@ -48,8 +48,6 @@ class ReservationRepositoryImpl(
     override fun findQAllByUserIdWithDetails(userId: Long, status: ReservationStatus?): List<Reservation> {
         return queryFactory
             .selectFrom(reservation)
-            .join(reservation.parkingLot, parkingLot).fetchJoin()
-            .join(reservation.parkingSpot, parkingSpot).fetchJoin()
             .where(
                 reservation.user.id.eq(userId),
                 status?.let { reservation.status.eq(it) }

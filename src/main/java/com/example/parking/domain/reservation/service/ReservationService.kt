@@ -108,10 +108,10 @@ class ReservationService(
         val parkingLot = findParkingLot(reqDto.parkingLotId)
         val parkingSpot = findAndValidateSpot(reqDto, user)
 
-        val spot = reserveSpot(parkingSpot, reqDto.parkingSpotId)
-
-        validateNoOverlap(spot, start, end)
+        validateNoOverlap(parkingSpot, start, end)
         validateNoActiveReservation(userId, start)
+
+        val spot = reserveSpot(parkingSpot, reqDto.parkingSpotId)
 
         val savedReservation = reservationRepository.save(
             Reservation.of(user, parkingLot, spot, start, end)
