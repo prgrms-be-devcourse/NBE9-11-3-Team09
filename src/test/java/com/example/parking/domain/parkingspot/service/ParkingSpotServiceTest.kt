@@ -7,7 +7,6 @@ import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.entity.SpotStatus
 import com.example.parking.domain.parkingspot.entity.SpotType
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
-import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -31,9 +30,6 @@ class ParkingSpotServiceTest {
     @Autowired
     private lateinit var parkingSpotService: ParkingSpotService
 
-    @Autowired
-    private lateinit var entityManager: EntityManager
-
     private lateinit var savedSpot: ParkingSpot
     private lateinit var savedLot: ParkingLot
 
@@ -55,7 +51,6 @@ class ParkingSpotServiceTest {
     fun tryReserve_success() {
         // when
         val result = parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
-        entityManager.clear()
 
         // then
         assertThat(result).isEqualTo(1)
@@ -70,11 +65,9 @@ class ParkingSpotServiceTest {
     fun tryReserve_fail_alreadyOccupied() {
         // given - 먼저 한 번 선점
         parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
-        entityManager.clear()
 
         // when - 이미 점유된 자리에 다시 시도
         val result = parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
-        entityManager.clear()
 
         // then
         assertThat(result).isEqualTo(0)
