@@ -11,7 +11,7 @@ import java.time.LocalDateTime
 interface ParkingSpotRepository : JpaRepository<ParkingSpot, Long> {
 
     // [CUS-11] 자리 선점 CAS: AVAILABLE → OCCUPIED
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(clearAutomatically = false, flushAutomatically = true)
     @Query("UPDATE ParkingSpot p SET p.status = 'OCCUPIED', p.reservedAt = :now WHERE p.id = :id AND p.status = 'AVAILABLE'")
     fun tryReserve(@Param("id") id: Long, @Param("now") now: LocalDateTime): Int
 

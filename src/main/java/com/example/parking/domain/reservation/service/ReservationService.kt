@@ -196,8 +196,8 @@ class ReservationService(
         if (updated == 0) {
             throw IllegalStateException("방금 다른 사용자가 선점했습니다. 다른 자리를 선택해주세요.")
         }
-        return parkingSpotRepository.findById(spotId)
-            .orElseThrow { IllegalArgumentException("존재하지 않는 주차 자리입니다.") }
+        parkingSpot.updateStatus(SpotStatus.OCCUPIED)
+        return parkingSpot
     }
 
     private fun validateNoOverlap(spot: ParkingSpot, start: LocalDateTime, end: LocalDateTime) {
