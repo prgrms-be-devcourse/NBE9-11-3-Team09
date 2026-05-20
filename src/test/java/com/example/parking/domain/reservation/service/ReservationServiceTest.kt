@@ -231,9 +231,13 @@ class ReservationServiceTest @Autowired constructor(
     @Test
     @DisplayName("[CUS-04] 예약 취소 - 입차 30분 전 이후에는 취소할 수 없다")
     fun cancelReservation_after30Minutes_fail() {
+        savedReservation.cancel()
+        reservationRepository.flush()
+
         val newSpot = parkingSpotRepository.save(
             ParkingSpot(parkingLot = savedLot, number = "A-04", type = SpotType.SMALL)
         )
+
         val soonReservation = reservationRepository.save(
             Reservation.of(
                 user = savedUser,
