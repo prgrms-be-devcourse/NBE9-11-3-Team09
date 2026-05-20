@@ -180,6 +180,10 @@ class AdminReservationServiceTest @Autowired constructor(
     @Test
     @DisplayName("[ADM] 관리자 강제 취소 - PENDING 예약은 취소할 수 없다")
     fun cancelByAdmin_pending_fail() {
+        // savedReservation deactivate 후 새 예약 생성
+        savedReservation.deactivate()
+        reservationRepository.save(savedReservation)
+
         val pendingReservation = reservationRepository.save(
             Reservation.of(
                 user = normalUser,

@@ -24,7 +24,7 @@ class AdminUserServiceTest @Autowired constructor(
     @Test
     @DisplayName("회원 목록 조회 시 USER 계정만 반환한다")
     fun getAdminUsers_returnsOnlyUserRoleAccounts() {
-        createUser("tdd-user1@test.com", "TDD홍길동", "12가3456", VehicleType.SMALL, UserRole.USER)
+        createUser("tdd-user1@test.com", "TDD홍길동", "16가3356", VehicleType.SMALL, UserRole.USER)
         createUser("tdd-user2@test.com", "TDD김철수", "23나4567", VehicleType.LARGE, UserRole.USER)
         createUser("tdd-admin@test.com", "TDD관리자", "99가9999", VehicleType.SMALL, UserRole.ADMIN)
 

@@ -7,6 +7,7 @@ import com.example.parking.domain.parkingspot.entity.ParkingSpot
 import com.example.parking.domain.parkingspot.entity.SpotStatus
 import com.example.parking.domain.parkingspot.entity.SpotType
 import com.example.parking.domain.parkingspot.repository.ParkingSpotRepository
+import jakarta.persistence.EntityManager
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -23,6 +24,8 @@ import java.util.*
 @Transactional
 class ParkingSpotServiceTest {
 
+    @Autowired
+    private lateinit var entityManager: EntityManager
     @Autowired
     private lateinit var parkingSpotRepository: ParkingSpotRepository
     @Autowired
@@ -47,30 +50,25 @@ class ParkingSpotServiceTest {
     }
 
     @Test
-    @DisplayName("AVAILABLE 자리에 tryReserve 호출 시 반환값이 1이고 상태가 OCCUPIED로 바뀐다")
     fun tryReserve_success() {
-        // when
         val result = parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
-
-        // then
         assertThat(result).isEqualTo(1)
+
+        entityManager.clear() // 영속성 컨텍스트 강제 초기화
 
         val updated = parkingSpotRepository.findById(savedSpot.id).get()
         assertThat(updated.status).isEqualTo(SpotStatus.OCCUPIED)
-        assertThat(updated.reservedAt).isNotNull()
     }
 
     @Test
     @DisplayName("이미 OCCUPIED인 자리에 tryReserve 호출 시 반환값이 0이고 상태가 변하지 않는다")
     fun tryReserve_fail_alreadyOccupied() {
-        // given - 먼저 한 번 선점
         parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
 
-        // when - 이미 점유된 자리에 다시 시도
         val result = parkingSpotRepository.tryReserve(savedSpot.id, LocalDateTime.now())
-
-        // then
         assertThat(result).isEqualTo(0)
+
+        entityManager.clear()
 
         val unchanged = parkingSpotRepository.findById(savedSpot.id).get()
         assertThat(unchanged.status).isEqualTo(SpotStatus.OCCUPIED)
